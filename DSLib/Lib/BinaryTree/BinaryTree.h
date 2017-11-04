@@ -8,10 +8,14 @@ class BinaryTree
 
 public:
 	explicit BinaryTree(bin_tree::Node<T> *root) :root(root), height(0), node_count(0) {}
-	
+	virtual ~BinaryTree() = default;
+
 	void preorder() const;
 	void postorder() const;
 	void inorder() const;
+
+	virtual bin_tree::Node<T> *insert(T key) = 0;
+	virtual bool remove(T key) = 0;
 
 	bin_tree::Node<T> *root;
 	big_int height;
