@@ -20,9 +20,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{971122A0-318A-4687-A34E-A131C8810030}</ProjectGuid>
+    <ProjectGuid>{6B5A63C3-8C99-4E9E-BFAC-4F81B3E716A7}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>BST</RootNamespace>
+    <RootNamespace>BinaryTree</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -143,11 +143,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="BST.h" />
+    <ClInclude Include="BinaryTree.h" />
     <ClInclude Include="Node.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BST.cpp" />
+    <ClCompile Include="BinaryTree.cpp" />
+    <ClCompile Include="Node.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,5 +1,5 @@
 #pragma once
-namespace tree
+namespace bin_tree
 {
 	template<typename T>
 	class Node
