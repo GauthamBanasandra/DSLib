@@ -2,6 +2,7 @@
 #include "BST.h"
 
 #include <iostream>
+#include <vector>
 
 int main(int argc, char* argv[])
 {
@@ -21,7 +22,17 @@ int main(int argc, char* argv[])
 	n2.right_child = &n6;
 
 	Bst<int> bst(&root);
-	bst.preorder();
+	std::vector<int> preorder;
+
+	bst.preorder([&preorder](int data) {preorder.push_back(data); });
+
+	std::cout << "Printing from calling scope" << std::endl;
+	for (const auto  &item: preorder)
+	{
+		std::cout << item << '\t';
+	}
+
+	std::cout << std::endl;
 
 	return 0;
 }
