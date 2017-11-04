@@ -6,12 +6,12 @@
 
 int main(int argc, char* argv[])
 {
-	bin_tree::Node<int> root(0);
+	bin_tree::Node<int> root(3);
 	bin_tree::Node<int> n1(&root, 1);
-	bin_tree::Node<int> n2(&root, 2);
-	bin_tree::Node<int> n3(&n1, 3);
-	bin_tree::Node<int> n4(&n1, 4);
-	bin_tree::Node<int> n5(&n2, 5);
+	bin_tree::Node<int> n2(&root, 5);
+	bin_tree::Node<int> n3(&n1, 0);
+	bin_tree::Node<int> n4(&n1, 2);
+	bin_tree::Node<int> n5(&n2, 4);
 	bin_tree::Node<int> n6(&n2, 6);
 	
 	root.left_child = &n1;
@@ -22,12 +22,12 @@ int main(int argc, char* argv[])
 	n2.right_child = &n6;
 
 	Bst<int> bst(&root);
-	std::vector<int> preorder;
+	std::vector<int> inorder;
 
-	bst.preorder([&preorder](int data) {preorder.push_back(data); });
+	bst.inorder([&inorder](int data) {inorder.push_back(data); });
 
 	std::cout << "Printing from calling scope" << std::endl;
-	for (const auto  &item: preorder)
+	for (const auto  &item: inorder)
 	{
 		std::cout << item << '\t';
 	}
