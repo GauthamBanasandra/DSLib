@@ -13,14 +13,18 @@ public:
 	explicit BinaryTree(bin_tree::Node<T> *root) :root(root), height(0), node_count(0) {}
 	virtual ~BinaryTree() = default;
 
+	// Traversal methods with visit_action as a lambda
 	void preorder(std::function<void(T &data)> visit_action = [](T &data)->void {std::cout << data << '\n'; });
 	void postorder(std::function<void(T &data)> visit_action = [](T &data)->void {std::cout << data << '\n'; });
 	void inorder(std::function<void(T &data)> visit_action = [](T &data)->void {std::cout << data << '\n'; });
 
+	// Insert and remove methods are pure virtual (derived class must implement it)
 	virtual bin_tree::Node<T> *insert(T key) = 0;
 	virtual bool remove(T key) = 0;
 
 private:
+	// C++ doesn't allow a member to be used as the default value (for node as root)
+	// Thus, we need expose traversal methods as wrappers of these functions
 	void preorder(bin_tree::Node<T> *n, std::function<void(T &data)> &&visit_action);
 	void postorder(bin_tree::Node<T> *n, std::function<void(T &data)> &&visit_action);
 	void inorder(bin_tree::Node<T> *n, std::function<void(T &data)> &&visit_action);
