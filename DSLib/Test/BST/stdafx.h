@@ -13,4 +13,3 @@
 #include "BST.h"
 
 #include <vector>
-#include <algorithm>
