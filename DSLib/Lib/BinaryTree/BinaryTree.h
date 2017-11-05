@@ -7,56 +7,54 @@
 namespace ds
 {
 	template<class T>
-	class BinaryTree
+	class binary_tree
 	{
 		using big_int = unsigned long long;
 
 	public:
-		explicit BinaryTree(bin_tree::Node<T> *root) :root(root), height(0), node_count(0) {}
-		virtual ~BinaryTree() = default;
+		explicit binary_tree(bin_tree::node<T> *root) :root(root), height(0), node_count(0) {}
+		virtual ~binary_tree() = default;
 
 		// Traversal methods with visit_action as a lambda
 		void preorder(std::function<void(T &data)> visit_action = [](T &data)->void {std::cout << data << '\n'; });
 		void postorder(std::function<void(T &data)> visit_action = [](T &data)->void {std::cout << data << '\n'; });
 		void inorder(std::function<void(T &data)> visit_action = [](T &data)->void {std::cout << data << '\n'; });
 
-		// Insert and remove methods are pure virtual (derived class must implement it)
-		virtual bin_tree::Node<T> *insert(T key) = 0;
-		virtual bool remove(T key) = 0;
-
-	private:
 		// C++ doesn't allow a member to be used as the default value (for node as root)
 		// Thus, we need expose traversal methods as wrappers of these functions
-		void preorder(bin_tree::Node<T> *n, std::function<void(T &data)> &&visit_action);
-		void postorder(bin_tree::Node<T> *n, std::function<void(T &data)> &&visit_action);
-		void inorder(bin_tree::Node<T> *n, std::function<void(T &data)> &&visit_action);
+		void preorder(bin_tree::node<T> *n, std::function<void(T &data)> &&visit_action);
+		void postorder(bin_tree::node<T> *n, std::function<void(T &data)> &&visit_action);
+		void inorder(bin_tree::node<T> *n, std::function<void(T &data)> &&visit_action);
 
-	public:
-		bin_tree::Node<T> *root;
+		// Insert and remove methods are pure virtual (derived class must implement them)
+		virtual bin_tree::node<T> *insert(T key) = 0;
+		virtual bool remove(T key) = 0;
+
+		bin_tree::node<T> *root;
 		big_int height;
 		big_int node_count;
 	};
 
 	template <class T>
-	void BinaryTree<T>::preorder(std::function<void(T &data)> visit_action)
+	void binary_tree<T>::preorder(std::function<void(T &data)> visit_action)
 	{
 		preorder(root, std::move(visit_action));
 	}
 
 	template <class T>
-	void BinaryTree<T>::postorder(std::function<void(T &data)> visit_action)
+	void binary_tree<T>::postorder(std::function<void(T &data)> visit_action)
 	{
 		postorder(root, std::move(visit_action));
 	}
 
 	template <class T>
-	void BinaryTree<T>::inorder(std::function<void(T &data)> visit_action)
+	void binary_tree<T>::inorder(std::function<void(T &data)> visit_action)
 	{
 		inorder(root, std::move(visit_action));
 	}
 
 	template <class T>
-	void BinaryTree<T>::preorder(bin_tree::Node<T>* n, std::function<void(T& data)> &&visit_action)
+	void binary_tree<T>::preorder(bin_tree::node<T>* n, std::function<void(T& data)> &&visit_action)
 	{
 		if (n == nullptr)
 		{
@@ -69,7 +67,7 @@ namespace ds
 	}
 
 	template <class T>
-	void BinaryTree<T>::postorder(bin_tree::Node<T>* n, std::function<void(T& data)>&& visit_action)
+	void binary_tree<T>::postorder(bin_tree::node<T>* n, std::function<void(T& data)>&& visit_action)
 	{
 		if (n == nullptr)
 		{
@@ -82,7 +80,7 @@ namespace ds
 	}
 
 	template <class T>
-	void BinaryTree<T>::inorder(bin_tree::Node<T>* n, std::function<void(T& data)>&& visit_action)
+	void binary_tree<T>::inorder(bin_tree::node<T>* n, std::function<void(T& data)>&& visit_action)
 	{
 		if (n == nullptr)
 		{

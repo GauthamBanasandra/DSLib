@@ -3,7 +3,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace BinaryTree
+namespace binary_tree
 {
 	TEST_CLASS(BinaryTree)
 	{
@@ -12,13 +12,13 @@ namespace BinaryTree
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
 
-			ds::bin_tree::Node<int> root(data[0]);
-			ds::bin_tree::Node<int> n1(&root, data[1]);
-			ds::bin_tree::Node<int> n2(&root, data[2]);
-			ds::bin_tree::Node<int> n3(&n1, data[3]);
-			ds::bin_tree::Node<int> n4(&n1, data[4]);
-			ds::bin_tree::Node<int> n5(&n2, data[5]);
-			ds::bin_tree::Node<int> n6(&n2, data[6]);
+			ds::bin_tree::node<int> root(data[0]);
+			ds::bin_tree::node<int> n1(&root, data[1]);
+			ds::bin_tree::node<int> n2(&root, data[2]);
+			ds::bin_tree::node<int> n3(&n1, data[3]);
+			ds::bin_tree::node<int> n4(&n1, data[4]);
+			ds::bin_tree::node<int> n5(&n2, data[5]);
+			ds::bin_tree::node<int> n6(&n2, data[6]);
 
 			root.left_child = &n1;
 			root.right_child = &n2;
@@ -27,7 +27,7 @@ namespace BinaryTree
 			n2.left_child = &n5;
 			n2.right_child = &n6;
 
-			ds::Bst<int> bst(&root);
+			ds::bst<int> bst(&root);
 			std::vector<int> inorder;
 
 			bst.inorder([&inorder](int data) {inorder.push_back(data); });
@@ -46,13 +46,13 @@ namespace BinaryTree
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
 
-			ds::bin_tree::Node<int> root(data[0]);
-			ds::bin_tree::Node<int> n1(&root, data[1]);
-			ds::bin_tree::Node<int> n2(&root, data[2]);
-			ds::bin_tree::Node<int> n3(&n1, data[3]);
-			ds::bin_tree::Node<int> n4(&n1, data[4]);
-			ds::bin_tree::Node<int> n5(&n2, data[5]);
-			ds::bin_tree::Node<int> n6(&n2, data[6]);
+			ds::bin_tree::node<int> root(data[0]);
+			ds::bin_tree::node<int> n1(&root, data[1]);
+			ds::bin_tree::node<int> n2(&root, data[2]);
+			ds::bin_tree::node<int> n3(&n1, data[3]);
+			ds::bin_tree::node<int> n4(&n1, data[4]);
+			ds::bin_tree::node<int> n5(&n2, data[5]);
+			ds::bin_tree::node<int> n6(&n2, data[6]);
 
 			root.left_child = &n1;
 			root.right_child = &n2;
@@ -61,7 +61,7 @@ namespace BinaryTree
 			n2.left_child = &n5;
 			n2.right_child = &n6;
 
-			ds::Bst<int> bst(&root);
+			ds::bst<int> bst(&root);
 			std::vector<int> preorder;
 
 			bst.preorder([&preorder](int data) {preorder.push_back(data); });
@@ -79,13 +79,13 @@ namespace BinaryTree
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
 
-			ds::bin_tree::Node<int> root(data[0]);
-			ds::bin_tree::Node<int> n1(&root, data[1]);
-			ds::bin_tree::Node<int> n2(&root, data[2]);
-			ds::bin_tree::Node<int> n3(&n1, data[3]);
-			ds::bin_tree::Node<int> n4(&n1, data[4]);
-			ds::bin_tree::Node<int> n5(&n2, data[5]);
-			ds::bin_tree::Node<int> n6(&n2, data[6]);
+			ds::bin_tree::node<int> root(data[0]);
+			ds::bin_tree::node<int> n1(&root, data[1]);
+			ds::bin_tree::node<int> n2(&root, data[2]);
+			ds::bin_tree::node<int> n3(&n1, data[3]);
+			ds::bin_tree::node<int> n4(&n1, data[4]);
+			ds::bin_tree::node<int> n5(&n2, data[5]);
+			ds::bin_tree::node<int> n6(&n2, data[6]);
 
 			root.left_child = &n1;
 			root.right_child = &n2;
@@ -94,7 +94,7 @@ namespace BinaryTree
 			n2.left_child = &n5;
 			n2.right_child = &n6;
 
-			ds::Bst<int> bst(&root);
+			ds::bst<int> bst(&root);
 			std::vector<int> postorder;
 
 			bst.postorder([&postorder](int data) {postorder.push_back(data); });
