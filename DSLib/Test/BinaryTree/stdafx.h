@@ -12,5 +12,6 @@
 
 #include "BST.h"
 
+#include <string>
 #include <vector>
 #include <algorithm>

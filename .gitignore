@@ -42,3 +42,13 @@
 /DSLib/Client/BinaryTree/Debug
 /DSLib/Lib/BST/x64/Debug
 /DSLib/Test/BinaryTree/Debug
+/DSLib/Client/BinaryTree/Release
+/DSLib/Client/BinaryTree/x64/Release
+/DSLib/Lib/BinaryTree/Release
+/DSLib/Lib/BinaryTree/x64/Release
+/DSLib/Lib/BST/Release
+/DSLib/Lib/BST/x64/Release
+/DSLib/Release
+/DSLib/Test/BinaryTree/Release
+/DSLib/Test/BinaryTree/x64/Release
+/DSLib/Test/BinaryTree/x64/Debug
