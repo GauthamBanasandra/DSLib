@@ -6,13 +6,13 @@
 
 int main(int argc, char* argv[])
 {
-	bin_tree::Node<int> root(3);
-	bin_tree::Node<int> n1(&root, 1);
-	bin_tree::Node<int> n2(&root, 5);
-	bin_tree::Node<int> n3(&n1, 0);
-	bin_tree::Node<int> n4(&n1, 2);
-	bin_tree::Node<int> n5(&n2, 4);
-	bin_tree::Node<int> n6(&n2, 6);
+	ds::bin_tree::Node<int> root(3);
+	ds::bin_tree::Node<int> n1(&root, 1);
+	ds::bin_tree::Node<int> n2(&root, 5);
+	ds::bin_tree::Node<int> n3(&n1, 0);
+	ds::bin_tree::Node<int> n4(&n1, 2);
+	ds::bin_tree::Node<int> n5(&n2, 4);
+	ds::bin_tree::Node<int> n6(&n2, 6);
 	
 	root.left_child = &n1;
 	root.right_child = &n2;
@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 	n2.left_child = &n5;
 	n2.right_child = &n6;
 
-	Bst<int> bst(&root);
+	ds::Bst<int> bst(&root);
 	std::vector<int> inorder;
 
 	bst.inorder([&inorder](int data) {inorder.push_back(data); });
