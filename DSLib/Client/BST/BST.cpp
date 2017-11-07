@@ -20,8 +20,21 @@ int main(int argc, char* argv[])
 	n2.right_child = &n6;
 
 	ds::bst<int> bst(&root);
+
+	// Search
 	const auto find = bst.search(7);
-	std::cout << find << std::endl;
+	std::cout << "Search: " << find << std::endl;
+
+	// Successor
+	const auto successor_node = bst.successor(2);
+	if (successor_node != nullptr)
+	{
+		std::cout << "Successor: " << successor_node->data << std::endl;
+	}
+	else
+	{
+		std::cout << "No successor" << std::endl;
+	}
 
 	return 0;
 }

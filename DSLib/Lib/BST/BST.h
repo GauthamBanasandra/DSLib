@@ -16,13 +16,17 @@ namespace ds
 		bool search(const T &key) const;
 		bin_tree::node<T> *search(const T &key, bin_tree::node<T> *n) const;
 
-		bin_tree::node<T> *successor(T key);
+		bin_tree::node<T> *successor(const T &key);
 		bin_tree::node<T> *predecessor(T key);
 		bin_tree::node<T> *find_min();
 		bin_tree::node<T> *find_max();
 
 		bin_tree::node<T> * insert(T key) override;
 		bool remove(T key) override;
+
+	private:
+		bin_tree::node<T> *successor_up(bin_tree::node<T> *n);
+		bin_tree::node<T> *successor_down(bin_tree::node<T> *n);
 	};
 
 	template <class T>
@@ -58,8 +62,32 @@ namespace ds
 	}
 
 	template <class T>
-	bin_tree::node<T>* bst<T>::successor(T key)
+	bin_tree::node<T>* bst<T>::successor(const T& key)
 	{
+		auto n = search(key, this->root);
+		if (n == nullptr)
+		{
+			// If the key is not found, then there's no successor
+			return nullptr;
+		}
+
+		// There are 2 cases 
+		// If there's a right child, then recurse down to find its left most child
+		if (n->right_child != nullptr)
+		{
+			return successor_down(n->right_child);
+		}
+		
+		// If there's no right child but the node has an ancestor, 
+		// then traverse up till the node is a left child of its parent,
+		// then the successor is the ancestor of the current node
+		if (n->ancestor != nullptr)
+		{
+			return successor_up(n);
+		}
+
+		// If both the above cases don't work then it's the greatest element
+		return nullptr;
 	}
 
 	template <class T>
@@ -87,5 +115,32 @@ namespace ds
 	bool bst<T>::remove(T key)
 	{
 		return false;
+	}
+
+	template <class T>
+	bin_tree::node<T>* bst<T>::successor_up(bin_tree::node<T>* n)
+	{
+		if (n->ancestor == nullptr)
+		{
+			return nullptr;
+		}
+
+		if ((n->ancestor->left_child != nullptr) && (n->ancestor->left_child->data == n->data))
+		{
+			return n->ancestor;
+		}
+
+		return successor_up(n->ancestor);
+	}
+
+	template <class T>
+	bin_tree::node<T>* bst<T>::successor_down(bin_tree::node<T>* n)
+	{
+		if (n->left_child != nullptr)
+		{
+			return successor_down(n->left_child);
+		}
+
+		return n;
 	}
 }
