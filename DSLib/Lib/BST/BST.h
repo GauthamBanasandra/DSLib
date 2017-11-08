@@ -17,7 +17,7 @@ namespace ds
 		bin_tree::node<T> *search(const T &key, bin_tree::node<T> *n) const;
 
 		bin_tree::node<T> *successor(const T &key);
-		bin_tree::node<T> *predecessor(T key);
+		bin_tree::node<T> *predecessor(const T &key);
 		bin_tree::node<T> *find_min();
 		bin_tree::node<T> *find_max();
 
@@ -27,6 +27,8 @@ namespace ds
 	private:
 		bin_tree::node<T> *successor_up(bin_tree::node<T> *n);
 		bin_tree::node<T> *successor_down(bin_tree::node<T> *n);
+		bin_tree::node<T> *predecessor_up(bin_tree::node<T> *n);
+		bin_tree::node<T> *predecessor_down(bin_tree::node<T> *n);
 	};
 
 	template <class T>
@@ -72,12 +74,12 @@ namespace ds
 		}
 
 		// There are 2 cases 
-		// If there's a right child, then recurse down to find its left most child
+		// If there's a right child, then recurse down to find the left most child in this path
 		if (n->right_child != nullptr)
 		{
 			return successor_down(n->right_child);
 		}
-		
+
 		// If there's no right child but the node has an ancestor, 
 		// then traverse up till the node is a left child of its parent,
 		// then the successor is the ancestor of the current node
@@ -91,8 +93,32 @@ namespace ds
 	}
 
 	template <class T>
-	bin_tree::node<T>* bst<T>::predecessor(T key)
+	bin_tree::node<T>* bst<T>::predecessor(const T& key)
 	{
+		auto n = search(key, this->root);
+		if (n == nullptr)
+		{
+			// If the key is not found, then there's no predecessor
+			return nullptr;
+		}
+
+		// There are 2 cases 
+		// If there's a left child, then recurse down to find the right most child in this path
+		if (n->left_child != nullptr)
+		{
+			return predecessor_down(n->left_child);
+		}
+
+		// If there's no left child but the node has an ancestor, 
+		// then traverse up till the node is a right child of its parent,
+		// then the predecessor is the ancestor of the current node
+		if (n->ancestor != nullptr)
+		{
+			return predecessor_up(n);
+		}
+
+		// If both the above cases don't work then it's the least element
+		return nullptr;
 	}
 
 	template <class T>
@@ -139,6 +165,33 @@ namespace ds
 		if (n->left_child != nullptr)
 		{
 			return successor_down(n->left_child);
+		}
+
+		return n;
+	}
+
+	template <class T>
+	bin_tree::node<T>* bst<T>::predecessor_up(bin_tree::node<T>* n)
+	{
+		if (n->ancestor == nullptr)
+		{
+			return nullptr;
+		}
+
+		if ((n->ancestor->right_child != nullptr) && (n->ancestor->right_child->data == n->data))
+		{
+			return n->ancestor;
+		}
+
+		return predecessor_up(n->ancestor);
+	}
+
+	template <class T>
+	bin_tree::node<T>* bst<T>::predecessor_down(bin_tree::node<T>* n)
+	{
+		if (n->right_child != nullptr)
+		{
+			return predecessor_down(n->right_child);
 		}
 
 		return n;

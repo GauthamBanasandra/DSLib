@@ -65,5 +65,37 @@ namespace BST
 				Assert::Fail(L"Successor of the greatest element exists");
 			}
 		}
+
+		TEST_METHOD(predecessor_test)
+		{
+			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
+
+			ds::bin_tree::node<int> root(data[0]);
+			ds::bin_tree::node<int> n1(&root, data[1]);
+			ds::bin_tree::node<int> n2(&root, data[2]);
+			ds::bin_tree::node<int> n3(&n1, data[3]);
+			ds::bin_tree::node<int> n4(&n1, data[4]);
+			ds::bin_tree::node<int> n5(&n2, data[5]);
+			ds::bin_tree::node<int> n6(&n2, data[6]);
+
+			root.left_child = &n1;
+			root.right_child = &n2;
+			n1.left_child = &n3;
+			n1.right_child = &n4;
+			n2.left_child = &n5;
+			n2.right_child = &n6;
+
+			ds::bst<int> bst(&root);
+			for (int i = data.size() - 1; i > 0; --i)
+			{
+				const auto predecessor_node = bst.predecessor(i);
+				Assert::AreEqual(i - 1, predecessor_node->data);
+			}
+
+			if (bst.predecessor(data[data.size() >> 1]) != nullptr)
+			{
+				Assert::Fail(L"Predecessor of the least element exists");
+			}
+		}
 	};
 }

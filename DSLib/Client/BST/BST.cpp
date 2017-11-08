@@ -23,10 +23,10 @@ int main(int argc, char* argv[])
 
 	// Search
 	const auto find = bst.search(7);
-	std::cout << "Search: " << find << std::endl;
+	std::cout << "Search: " << (find ? "found" : "not found") << std::endl;
 
 	// Successor
-	const auto successor_node = bst.successor(2);
+	const auto successor_node = bst.successor(4);
 	if (successor_node != nullptr)
 	{
 		std::cout << "Successor: " << successor_node->data << std::endl;
@@ -34,6 +34,16 @@ int main(int argc, char* argv[])
 	else
 	{
 		std::cout << "No successor" << std::endl;
+	}
+
+	const auto predecessor_node = bst.predecessor(4);
+	if (predecessor_node != nullptr)
+	{
+		std::cout << "Predecessor: " << predecessor_node->data << std::endl;
+	}
+	else
+	{
+		std::cout << "No predecessor" << std::endl;
 	}
 
 	return 0;
