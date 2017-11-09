@@ -1,6 +1,7 @@
 #include "BST.h"
 
 #include <iostream>
+#include <vector>
 
 int main(int argc, char* argv[])
 {
@@ -36,6 +37,7 @@ int main(int argc, char* argv[])
 		std::cout << "No successor" << std::endl;
 	}
 
+	// Predecessor
 	const auto predecessor_node = bst.predecessor(4);
 	if (predecessor_node != nullptr)
 	{
@@ -46,5 +48,14 @@ int main(int argc, char* argv[])
 		std::cout << "No predecessor" << std::endl;
 	}
 
+	std::cout << "Dynamic BST:" << std::endl;
+	std::vector<int> numbers{ 7, 3, 1, 2, 5, 6, 4, 0 };
+	ds::bst<int> bst_dyn;
+	for (auto& number : numbers)
+	{
+		bst_dyn.insert(number);
+	}
+
+	bst_dyn.inorder();
 	return 0;
 }

@@ -7,6 +7,7 @@ namespace ds
 	class bst :public binary_tree<T>
 	{
 	public:
+		bst() :binary_tree<T>(nullptr) {}
 		explicit bst(bin_tree::node<T>* root)
 			: binary_tree<T>(root)
 		{
@@ -21,7 +22,7 @@ namespace ds
 		bin_tree::node<T> *find_min();
 		bin_tree::node<T> *find_max();
 
-		bin_tree::node<T> * insert(T key) override;
+		bin_tree::node<T> * insert(T& key) override;
 		bool remove(T key) override;
 
 	private:
@@ -29,6 +30,7 @@ namespace ds
 		bin_tree::node<T> *successor_down(bin_tree::node<T> *n);
 		bin_tree::node<T> *predecessor_up(bin_tree::node<T> *n);
 		bin_tree::node<T> *predecessor_down(bin_tree::node<T> *n);
+		bin_tree::node<T> *insert(T &key, bin_tree::node<T> *n);
 	};
 
 	template <class T>
@@ -132,9 +134,15 @@ namespace ds
 	}
 
 	template <class T>
-	bin_tree::node<T>* bst<T>::insert(T key)
+	bin_tree::node<T>* bst<T>::insert(T& key)
 	{
-		return nullptr;
+		if (this->root == nullptr)
+		{
+			this->root = new bin_tree::node<T>(this->root, key);
+			return this->root;
+		}
+
+		return insert(key, this->root);
 	}
 
 	template <class T>
@@ -195,5 +203,28 @@ namespace ds
 		}
 
 		return n;
+	}
+
+	template <class T>
+	bin_tree::node<T>* bst<T>::insert(T& key, bin_tree::node<T>* n)
+	{
+		if (key <= n->data)
+		{
+			if (n->left_child == nullptr)
+			{
+				n->left_child = new bin_tree::node<T>(n, key);
+				return n->left_child;
+			}
+
+			return insert(key, n->left_child);
+		}
+
+		if (n->right_child == nullptr)
+		{
+			n->right_child = new bin_tree::node<T>(n, key);
+			return n->right_child;
+		}
+
+		return insert(key, n->right_child);
 	}
 }

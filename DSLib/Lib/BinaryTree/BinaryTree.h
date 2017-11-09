@@ -27,7 +27,7 @@ namespace ds
 		void inorder(bin_tree::node<T> *n, std::function<void(T &data)> &&visit_action);
 
 		// Insert and remove methods are pure virtual (derived class must implement them)
-		virtual bin_tree::node<T> *insert(T key) = 0;
+		virtual bin_tree::node<T> *insert(T& key) = 0;
 		virtual bool remove(T key) = 0;
 
 		bin_tree::node<T> *root;
@@ -90,5 +90,5 @@ namespace ds
 		inorder(n->left_child, std::move(visit_action));
 		visit_action(n->data);
 		inorder(n->right_child, std::move(visit_action));
-	}	
+	}
 }
