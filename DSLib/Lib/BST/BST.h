@@ -7,30 +7,26 @@ namespace ds
 	class bst :public binary_tree<T>
 	{
 	public:
-		bst() :binary_tree<T>(nullptr) {}
-		explicit bst(bin_tree::node<T>* root)
-			: binary_tree<T>(root)
-		{
-		}
+		bst() :binary_tree<T>() {}		
 		~bst() {}
 
 		bool search(const T &key) const;
-		bin_tree::node<T> *search(const T &key, bin_tree::node<T> *n) const;
+		std::shared_ptr<bin_tree::node<T>> search(const T &key, std::shared_ptr<bin_tree::node<T>> n) const;
 
-		bin_tree::node<T> *successor(const T &key);
-		bin_tree::node<T> *predecessor(const T &key);
-		bin_tree::node<T> *find_min();
-		bin_tree::node<T> *find_max();
+	 	std::shared_ptr<bin_tree::node<T>> successor(const T &key);
+		std::shared_ptr<bin_tree::node<T>> predecessor(const T &key);
+		std::shared_ptr<bin_tree::node<T>> find_min();
+		std::shared_ptr<bin_tree::node<T>> find_max();
 
-		bin_tree::node<T> * insert(T& key) override;
+		std::shared_ptr<bin_tree::node<T>> insert(T& key) override;
 		bool remove(T key) override;
 
-	private:
-		bin_tree::node<T> *successor_up(bin_tree::node<T> *n);
-		bin_tree::node<T> *successor_down(bin_tree::node<T> *n);
-		bin_tree::node<T> *predecessor_up(bin_tree::node<T> *n);
-		bin_tree::node<T> *predecessor_down(bin_tree::node<T> *n);
-		bin_tree::node<T> *insert(T &key, bin_tree::node<T> *n);
+	private: // TODO : shared_ptr could be move rather than copied
+		std::shared_ptr<bin_tree::node<T>> successor_up(std::shared_ptr<bin_tree::node<T>> n);
+		std::shared_ptr<bin_tree::node<T>> successor_down(std::shared_ptr<bin_tree::node<T>> n);
+		std::shared_ptr<bin_tree::node<T>> predecessor_up(std::shared_ptr<bin_tree::node<T>> n);
+		std::shared_ptr<bin_tree::node<T>> predecessor_down(std::shared_ptr<bin_tree::node<T>> n);
+		std::shared_ptr<bin_tree::node<T>> insert(T &key, std::shared_ptr<bin_tree::node<T>> n);
 	};
 
 	template <class T>
@@ -45,7 +41,7 @@ namespace ds
 	}
 
 	template <class T>
-	bin_tree::node<T>* bst<T>::search(const T& key, bin_tree::node<T>* n) const
+	std::shared_ptr<bin_tree::node<T>> bst<T>::search(const T& key, std::shared_ptr<bin_tree::node<T>> n) const
 	{
 		if (n == nullptr)
 		{
@@ -66,7 +62,7 @@ namespace ds
 	}
 
 	template <class T>
-	bin_tree::node<T>* bst<T>::successor(const T& key)
+	std::shared_ptr<bin_tree::node<T>>  bst<T>::successor(const T& key)
 	{
 		auto n = search(key, this->root);
 		if (n == nullptr)
@@ -85,7 +81,7 @@ namespace ds
 		// If there's no right child but the node has an ancestor, 
 		// then traverse up till the node is a left child of its parent,
 		// then the successor is the ancestor of the current node
-		if (n->ancestor != nullptr)
+		if (n->ancestor.lock() != nullptr)
 		{
 			return successor_up(n);
 		}
@@ -95,7 +91,7 @@ namespace ds
 	}
 
 	template <class T>
-	bin_tree::node<T>* bst<T>::predecessor(const T& key)
+	std::shared_ptr<bin_tree::node<T>> bst<T>::predecessor(const T& key)
 	{
 		auto n = search(key, this->root);
 		if (n == nullptr)
@@ -114,7 +110,7 @@ namespace ds
 		// If there's no left child but the node has an ancestor, 
 		// then traverse up till the node is a right child of its parent,
 		// then the predecessor is the ancestor of the current node
-		if (n->ancestor != nullptr)
+		if (n->ancestor.lock() != nullptr)
 		{
 			return predecessor_up(n);
 		}
@@ -124,21 +120,21 @@ namespace ds
 	}
 
 	template <class T>
-	bin_tree::node<T>* bst<T>::find_min()
+	std::shared_ptr<bin_tree::node<T>> bst<T>::find_min()
 	{
 	}
 
 	template <class T>
-	bin_tree::node<T>* bst<T>::find_max()
+	std::shared_ptr<bin_tree::node<T>> bst<T>::find_max()
 	{
 	}
 
 	template <class T>
-	bin_tree::node<T>* bst<T>::insert(T& key)
+	std::shared_ptr<bin_tree::node<T>> bst<T>::insert(T& key)
 	{
 		if (this->root == nullptr)
 		{
-			this->root = new bin_tree::node<T>(this->root, key);
+			this->root = std::make_shared<bin_tree::node<T>>(key);
 			return this->root;
 		}
 
@@ -152,23 +148,24 @@ namespace ds
 	}
 
 	template <class T>
-	bin_tree::node<T>* bst<T>::successor_up(bin_tree::node<T>* n)
+	std::shared_ptr<bin_tree::node<T>> bst<T>::successor_up(std::shared_ptr<bin_tree::node<T>> n)
 	{
-		if (n->ancestor == nullptr)
+		auto &ancestor = n->ancestor.lock();
+		if (ancestor == nullptr)
 		{
 			return nullptr;
 		}
 
-		if ((n->ancestor->left_child != nullptr) && (n->ancestor->left_child->data == n->data))
+		if ((ancestor->left_child != nullptr) && (ancestor->left_child->data == n->data))
 		{
-			return n->ancestor;
+			return ancestor;
 		}
 
-		return successor_up(n->ancestor);
+		return successor_up(ancestor);
 	}
 
 	template <class T>
-	bin_tree::node<T>* bst<T>::successor_down(bin_tree::node<T>* n)
+	std::shared_ptr<bin_tree::node<T>> bst<T>::successor_down(std::shared_ptr<bin_tree::node<T>> n)
 	{
 		if (n->left_child != nullptr)
 		{
@@ -179,23 +176,24 @@ namespace ds
 	}
 
 	template <class T>
-	bin_tree::node<T>* bst<T>::predecessor_up(bin_tree::node<T>* n)
+	std::shared_ptr<bin_tree::node<T>> bst<T>::predecessor_up(std::shared_ptr<bin_tree::node<T>> n)
 	{
-		if (n->ancestor == nullptr)
+		auto &ancestor = n->ancestor.lock();
+		if (ancestor == nullptr)
 		{
 			return nullptr;
 		}
 
-		if ((n->ancestor->right_child != nullptr) && (n->ancestor->right_child->data == n->data))
+		if ((ancestor->right_child != nullptr) && (ancestor->right_child->data == n->data))
 		{
-			return n->ancestor;
+			return ancestor;
 		}
 
-		return predecessor_up(n->ancestor);
+		return predecessor_up(ancestor);
 	}
 
 	template <class T>
-	bin_tree::node<T>* bst<T>::predecessor_down(bin_tree::node<T>* n)
+	std::shared_ptr<bin_tree::node<T>> bst<T>::predecessor_down(std::shared_ptr<bin_tree::node<T>> n)
 	{
 		if (n->right_child != nullptr)
 		{
@@ -206,13 +204,14 @@ namespace ds
 	}
 
 	template <class T>
-	bin_tree::node<T>* bst<T>::insert(T& key, bin_tree::node<T>* n)
+	std::shared_ptr<bin_tree::node<T>> bst<T>::insert(T& key, std::shared_ptr<bin_tree::node<T>> n)
 	{
 		if (key <= n->data)
 		{
 			if (n->left_child == nullptr)
 			{
-				n->left_child = new bin_tree::node<T>(n, key);
+				n->left_child = std::make_shared<bin_tree::node<T>>(key);	
+				n->left_child->ancestor = n;
 				return n->left_child;
 			}
 
@@ -221,7 +220,8 @@ namespace ds
 
 		if (n->right_child == nullptr)
 		{
-			n->right_child = new bin_tree::node<T>(n, key);
+			n->right_child = std::make_shared<bin_tree::node<T>>(key);
+			n->right_child->ancestor = n;
 			return n->right_child;
 		}
 

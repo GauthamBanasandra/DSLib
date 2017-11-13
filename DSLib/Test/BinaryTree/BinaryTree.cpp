@@ -11,23 +11,12 @@ namespace binary_tree
 		TEST_METHOD(inorder_test)
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
+			ds::bst<int> bst;
+			for (auto item : data)
+			{
+				bst.insert(item);
+			}
 
-			ds::bin_tree::node<int> root(data[0]);
-			ds::bin_tree::node<int> n1(&root, data[1]);
-			ds::bin_tree::node<int> n2(&root, data[2]);
-			ds::bin_tree::node<int> n3(&n1, data[3]);
-			ds::bin_tree::node<int> n4(&n1, data[4]);
-			ds::bin_tree::node<int> n5(&n2, data[5]);
-			ds::bin_tree::node<int> n6(&n2, data[6]);
-
-			root.left_child = &n1;
-			root.right_child = &n2;
-			n1.left_child = &n3;
-			n1.right_child = &n4;
-			n2.left_child = &n5;
-			n2.right_child = &n6;
-
-			ds::bst<int> bst(&root);
 			std::vector<int> inorder;
 
 			bst.inorder([&inorder](int data) {inorder.push_back(data); });
@@ -45,23 +34,12 @@ namespace binary_tree
 		TEST_METHOD(preorder_test)
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
+			ds::bst<int> bst;
+			for (auto item : data)
+			{
+				bst.insert(item);
+			}
 
-			ds::bin_tree::node<int> root(data[0]);
-			ds::bin_tree::node<int> n1(&root, data[1]);
-			ds::bin_tree::node<int> n2(&root, data[2]);
-			ds::bin_tree::node<int> n3(&n1, data[3]);
-			ds::bin_tree::node<int> n4(&n1, data[4]);
-			ds::bin_tree::node<int> n5(&n2, data[5]);
-			ds::bin_tree::node<int> n6(&n2, data[6]);
-
-			root.left_child = &n1;
-			root.right_child = &n2;
-			n1.left_child = &n3;
-			n1.right_child = &n4;
-			n2.left_child = &n5;
-			n2.right_child = &n6;
-
-			ds::bst<int> bst(&root);
 			std::vector<int> preorder;
 
 			bst.preorder([&preorder](int data) {preorder.push_back(data); });
@@ -79,22 +57,12 @@ namespace binary_tree
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
 
-			ds::bin_tree::node<int> root(data[0]);
-			ds::bin_tree::node<int> n1(&root, data[1]);
-			ds::bin_tree::node<int> n2(&root, data[2]);
-			ds::bin_tree::node<int> n3(&n1, data[3]);
-			ds::bin_tree::node<int> n4(&n1, data[4]);
-			ds::bin_tree::node<int> n5(&n2, data[5]);
-			ds::bin_tree::node<int> n6(&n2, data[6]);
+			ds::bst<int> bst;
+			for (auto item : data)
+			{
+				bst.insert(item);
+			}
 
-			root.left_child = &n1;
-			root.right_child = &n2;
-			n1.left_child = &n3;
-			n1.right_child = &n4;
-			n2.left_child = &n5;
-			n2.right_child = &n6;
-
-			ds::bst<int> bst(&root);
 			std::vector<int> postorder;
 
 			bst.postorder([&postorder](int data) {postorder.push_back(data); });

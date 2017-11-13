@@ -12,7 +12,7 @@ namespace ds
 		using big_int = unsigned long long;
 
 	public:
-		explicit binary_tree(bin_tree::node<T> *root) :root(root), height(0), node_count(0) {}
+		explicit binary_tree() : height(0), node_count(0) {}
 		virtual ~binary_tree() = default;
 
 		// Traversal methods with visit_action as a lambda
@@ -27,10 +27,10 @@ namespace ds
 		void inorder(bin_tree::node<T> *n, std::function<void(T &data)> &&visit_action);
 
 		// Insert and remove methods are pure virtual (derived class must implement them)
-		virtual bin_tree::node<T> *insert(T& key) = 0;
+		virtual std::shared_ptr<bin_tree::node<T>> insert(T& key) = 0;
 		virtual bool remove(T key) = 0;
 
-		bin_tree::node<T> *root;
+		std::shared_ptr<bin_tree::node<T>> root;
 		big_int height;
 		big_int node_count;
 	};
@@ -38,19 +38,19 @@ namespace ds
 	template <class T>
 	void binary_tree<T>::preorder(std::function<void(T &data)> visit_action)
 	{
-		preorder(root, std::move(visit_action));
+		preorder(root.get(), std::move(visit_action));
 	}
 
 	template <class T>
 	void binary_tree<T>::postorder(std::function<void(T &data)> visit_action)
 	{
-		postorder(root, std::move(visit_action));
+		postorder(root.get(), std::move(visit_action));
 	}
 
 	template <class T>
 	void binary_tree<T>::inorder(std::function<void(T &data)> visit_action)
 	{
-		inorder(root, std::move(visit_action));
+		inorder(root.get(), std::move(visit_action));
 	}
 
 	template <class T>
@@ -62,8 +62,8 @@ namespace ds
 		}
 
 		visit_action(n->data);
-		preorder(n->left_child, std::move(visit_action));
-		preorder(n->right_child, std::move(visit_action));
+		preorder(n->left_child.get(), std::move(visit_action));
+		preorder(n->right_child.get(), std::move(visit_action));
 	}
 
 	template <class T>
@@ -74,8 +74,8 @@ namespace ds
 			return;
 		}
 
-		postorder(n->left_child, std::move(visit_action));
-		postorder(n->right_child, std::move(visit_action));
+		postorder(n->left_child.get(), std::move(visit_action));
+		postorder(n->right_child.get(), std::move(visit_action));
 		visit_action(n->data);
 	}
 
@@ -87,8 +87,8 @@ namespace ds
 			return;
 		}
 
-		inorder(n->left_child, std::move(visit_action));
+		inorder(n->left_child.get(), std::move(visit_action));
 		visit_action(n->data);
-		inorder(n->right_child, std::move(visit_action));
+		inorder(n->right_child.get(), std::move(visit_action));
 	}
 }
