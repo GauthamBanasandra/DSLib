@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
 	}	
 
 	//std::cout << "Remove 4: " << (bst.remove(4) ? "success" :"failed") << std::endl;
-	bst.remove(3);
+	bst.remove(3);	
 	std::cout << "Inorder:" << std::endl;
 	bst.inorder();
 

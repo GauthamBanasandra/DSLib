@@ -166,31 +166,31 @@ namespace ds
 		else
 		{
 			auto successor = successor_down(n->right_child);
+			// Successor renounces its lineage
+			auto successor_ancestor = successor->ancestor.lock();
+			switch (successor->node_type)
+			{
+			case bin_tree::node_type::k_left_child:
+				successor_ancestor->left_child = nullptr;
+				break;
+
+			case bin_tree::node_type::k_right_child:
+				successor_ancestor->right_child = nullptr;
+				break;
+
+			case bin_tree::node_type::k_root:
+				// Root node can't be a successor node
+				assert(false);
+				break;
+
+			default:
+				// Not handled for this node_type
+				assert(false);
+			}
+
 			if (successor->is_leaf())
 			{
-				// Renounce child
-				auto successor_ancestor = successor->ancestor.lock();
-				switch (successor->node_type)
-				{
-				case bin_tree::node_type::k_left_child:
-					successor_ancestor->left_child = nullptr;
-					break;
-
-				case bin_tree::node_type::k_right_child:
-					successor_ancestor->right_child = nullptr;
-					break;
-
-				case bin_tree::node_type::k_root:
-					// Root node can't be a successor node
-					assert(false);
-					break;
-
-				default:
-					// Not handled for this node_type
-					assert(false);
-				}
-
-				// Adopt n's children
+				// Successor adopt n's children
 				if (n->left_child != nullptr)
 				{
 					n->left_child->ancestor = successor;
