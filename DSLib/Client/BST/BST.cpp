@@ -6,7 +6,7 @@
 int main(int argc, char* argv[])
 {
 	ds::bst<int> bst;
-	std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
+	std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6};
 	for (auto item : data)
 	{
 		bst.insert(item);
@@ -36,16 +36,12 @@ int main(int argc, char* argv[])
 	else
 	{
 		std::cout << "No predecessor" << std::endl;
-	}
+	}	
 
-	std::cout << "Dynamic BST:" << std::endl;
-	std::vector<int> numbers{ 7, 3, 1, 2, 5, 6, 4, 0 };
-	ds::bst<int> bst_dyn;
-	for (auto& number : numbers)
-	{
-		bst_dyn.insert(number);
-	}
+	//std::cout << "Remove 4: " << (bst.remove(4) ? "success" :"failed") << std::endl;
+	bst.remove(3);
+	std::cout << "Inorder:" << std::endl;
+	bst.inorder();
 
-	bst_dyn.inorder();
 	return 0;
 }

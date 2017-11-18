@@ -1,5 +1,6 @@
 #pragma once
 #include "BinaryTree.h"
+#include <cassert>
 
 namespace ds
 {
@@ -144,7 +145,80 @@ namespace ds
 	template <class T>
 	bool bst<T>::remove(T key)
 	{
-		return false;
+		auto n = search(key, this->root);
+		if (n == nullptr)
+		{
+			return false;
+		}
+
+		if (n->left_child == nullptr && n->right_child == nullptr)
+		{
+			bin_tree::node<T>::remove(n);
+		}
+		else if (n->left_child != nullptr && n->right_child == nullptr)
+		{
+			n->replace(this->root, n->left_child);
+		}
+		else if (n->left_child == nullptr && n->right_child != nullptr)
+		{
+			n->replace(this->root, n->right_child);
+		}
+		else
+		{
+			auto successor = successor_down(n->right_child);
+			if (successor->is_leaf())
+			{
+				// Renounce child
+				auto successor_ancestor = successor->ancestor.lock();
+				switch (successor->node_type)
+				{
+				case bin_tree::node_type::k_left_child:
+					successor_ancestor->left_child = nullptr;
+					break;
+
+				case bin_tree::node_type::k_right_child:
+					successor_ancestor->right_child = nullptr;
+					break;
+
+				case bin_tree::node_type::k_root:
+					// Root node can't be a successor node
+					assert(false);
+					break;
+
+				default:
+					// Not handled for this node_type
+					assert(false);
+				}
+
+				// Adopt n's children
+				if (n->left_child != nullptr)
+				{
+					n->left_child->ancestor = successor;
+					successor->left_child = n->left_child;
+				}
+
+				if ((n->right_child != nullptr) && (n->right_child != successor))
+				{
+					n->right_child->ancestor = successor;
+					successor->right_child = n->right_child;
+				}
+
+				n->replace(this->root, successor);
+			}
+			else if (successor->node_type == bin_tree::node_type::k_right_child)
+			{
+				assert(successor->left_child == nullptr);
+				successor->left_child = n->left_child;
+				n->replace(this->root, successor);
+			}
+			else
+			{
+				successor->copy_data_to(n);
+				successor->replace(this->root, successor->right_child);
+			}
+		}
+
+		return true;
 	}
 
 	template <class T>
