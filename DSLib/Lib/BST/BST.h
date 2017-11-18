@@ -134,7 +134,7 @@ namespace ds
 	{
 		if (this->root == nullptr)
 		{
-			this->root = std::make_shared<bin_tree::node<T>>(key);
+			this->root = std::make_shared<bin_tree::root_node<T>>(key);
 			return this->root;
 		}
 
@@ -149,14 +149,14 @@ namespace ds
 
 	template <class T>
 	std::shared_ptr<bin_tree::node<T>> bst<T>::successor_up(std::shared_ptr<bin_tree::node<T>> n)
-	{
+	{		
 		auto &ancestor = n->ancestor.lock();
 		if (ancestor == nullptr)
 		{
 			return nullptr;
 		}
 
-		if ((ancestor->left_child != nullptr) && (ancestor->left_child->data == n->data))
+		if (n->get_node_type() == bin_tree::node_type::k_left_child)
 		{
 			return ancestor;
 		}
@@ -184,7 +184,7 @@ namespace ds
 			return nullptr;
 		}
 
-		if ((ancestor->right_child != nullptr) && (ancestor->right_child->data == n->data))
+		if (n->get_node_type() == bin_tree::node_type::k_right_child)
 		{
 			return ancestor;
 		}
@@ -210,7 +210,7 @@ namespace ds
 		{
 			if (n->left_child == nullptr)
 			{
-				n->left_child = std::make_shared<bin_tree::node<T>>(key);	
+				n->left_child = std::make_shared<bin_tree::left_node<T>>(key);	
 				n->left_child->ancestor = n;
 				return n->left_child;
 			}
@@ -220,7 +220,7 @@ namespace ds
 
 		if (n->right_child == nullptr)
 		{
-			n->right_child = std::make_shared<bin_tree::node<T>>(key);
+			n->right_child = std::make_shared<bin_tree::right_node<T>>(key);
 			n->right_child->ancestor = n;
 			return n->right_child;
 		}
