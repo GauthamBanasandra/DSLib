@@ -29,6 +29,9 @@ namespace ds
 			std::shared_ptr<node> right_child;
 		};
 
+		// Perfoms replacement of the node with other
+		// This doesn't handle childrens' links which is the responsibility of the caller
+		// TODO : Move this method to bst class to avoid passing root as parameter
 		template <typename T>
 		void node<T>::replace(std::shared_ptr<node<T>>& root, std::shared_ptr<node<T>>& other)
 		{

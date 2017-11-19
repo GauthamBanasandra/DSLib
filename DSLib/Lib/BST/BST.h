@@ -151,21 +151,28 @@ namespace ds
 			return false;
 		}
 
-		if (n->left_child == nullptr && n->right_child == nullptr)
+		if (n->is_leaf())
 		{
 			bin_tree::node<T>::remove(n);
 		}
 		else if (n->left_child != nullptr && n->right_child == nullptr)
 		{
+			// Node to remove has only a left child,
+			// replace the node to be removed with its left child 
 			n->replace(this->root, n->left_child);
 		}
 		else if (n->left_child == nullptr && n->right_child != nullptr)
 		{
+			// Node to remove has only a right child,
+			// replace the node to be removed with its right child 
 			n->replace(this->root, n->right_child);
 		}
 		else
 		{
+			// Node to remove has both the children,
+			// so find the successor of the node to remove
 			auto successor = successor_down(n->right_child);
+
 			// Successor renounces its lineage
 			auto successor_ancestor = successor->ancestor.lock();
 			switch (successor->node_type)
@@ -197,6 +204,7 @@ namespace ds
 					successor->left_child = n->left_child;
 				}
 
+				// The second check is important as it avoids self-loops
 				if ((n->right_child != nullptr) && (n->right_child != successor))
 				{
 					n->right_child->ancestor = successor;
@@ -207,14 +215,33 @@ namespace ds
 			}
 			else if (successor->node_type == bin_tree::node_type::k_right_child)
 			{
+				// Successor is an internal node and is also the right child of its ancestor
+				// This happens only if the successor is an immediate successor of the node to be removed
 				assert(successor->left_child == nullptr);
-				successor->left_child = n->left_child;
+				
+				// Adopt n's left child if it exists
+				if (n->left_child != nullptr)
+				{
+					n->left_child->ancestor = successor;
+					successor->left_child = n->left_child;
+				}
+				
 				n->replace(this->root, successor);
 			}
 			else
 			{
+				// Successor is an internal node and is the left child of its ancestor
+				// Such a successor will not have a left child, if it has one, it'll be a leaf node
+				assert(successor->left_child == nullptr);
+
+				// Temporary pointer to successor's right child
+				auto right_child = successor->right_child;
+
+				// Copy the data from successor to the node to be removed and replace the successor
+				// with its right child
 				successor->copy_data_to(n);
-				successor->replace(this->root, successor->right_child);
+				successor->right_child = nullptr;
+				successor->replace(this->root, right_child);
 			}
 		}
 

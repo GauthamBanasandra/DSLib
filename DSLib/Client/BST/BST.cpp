@@ -5,8 +5,8 @@
 
 int main(int argc, char* argv[])
 {
-	ds::bst<int> bst;
-	std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6};
+	ds::bst<double> bst;
+	std::vector<double> data{ 3, 1, 5, 0, 2, 4, 6, 7 };
 	for (auto item : data)
 	{
 		bst.insert(item);
@@ -38,8 +38,8 @@ int main(int argc, char* argv[])
 		std::cout << "No predecessor" << std::endl;
 	}	
 
-	//std::cout << "Remove 4: " << (bst.remove(4) ? "success" :"failed") << std::endl;
-	bst.remove(3);	
+	// Remove
+	std::cout << "Remove 4: " << (bst.remove(4) ? "success" :"failed") << std::endl;
 	std::cout << "Inorder:" << std::endl;
 	bst.inorder();
 
