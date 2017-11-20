@@ -153,6 +153,12 @@ namespace ds
 
 		if (n->is_leaf())
 		{
+			// If n is the root node, then reset the root pointer
+			if (n == this->root)
+			{
+				this->root = nullptr;
+			}
+
 			bin_tree::node<T>::remove(n);
 		}
 		else if (n->left_child != nullptr && n->right_child == nullptr)
@@ -218,14 +224,14 @@ namespace ds
 				// Successor is an internal node and is also the right child of its ancestor
 				// This happens only if the successor is an immediate successor of the node to be removed
 				assert(successor->left_child == nullptr);
-				
+
 				// Adopt n's left child if it exists
 				if (n->left_child != nullptr)
 				{
 					n->left_child->ancestor = successor;
 					successor->left_child = n->left_child;
 				}
-				
+
 				n->replace(this->root, successor);
 			}
 			else

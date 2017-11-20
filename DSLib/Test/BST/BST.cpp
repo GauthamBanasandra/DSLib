@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 #include <algorithm>
+#include <queue>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -69,6 +70,43 @@ namespace BST
 
 	TEST_CLASS(bst_node_removal)
 	{
+		TEST_METHOD(remove_sequence)
+		{
+			std::vector<int> data_queue{ 3, 1, 5, 0, 2, 4, 6 };
+			for (auto j = 0; j < data_queue.size(); ++j)
+			{
+				std::vector<int> data(data_queue.begin() + j, data_queue.end());
+				ds::bst<int> bst;
+				for (auto item : data)
+				{
+					bst.insert(item);
+				}
+
+				const auto key = data_queue[j];
+				bst.remove(key);
+
+				auto msg = "j: " + std::to_string(j) + "\tremoving key: " + std::to_string(key) + "\n";
+				Logger::WriteMessage(msg.c_str());
+
+				std::vector<int> inorder;
+				bst.inorder([&inorder](int data) {inorder.push_back(data); });
+
+				std::vector<int> expected(data.begin(), data.end());
+				expected.erase(remove(expected.begin(), expected.end(), key), expected.end());
+				sort(expected.begin(), expected.end());
+
+				Assert::AreEqual(expected.size(), inorder.size());
+				for (decltype(inorder.size()) i = 0; i < inorder.size(); ++i)
+				{
+					auto inner_msg = "Expected: " + std::to_string(expected[i]) + "\tActual: " + std::to_string(inorder[i]) + "\n";
+					Logger::WriteMessage(inner_msg.c_str());
+					Assert::AreEqual(expected[i], inorder[i]);
+				}
+
+				Logger::WriteMessage("\n");
+			}
+		}
+
 		TEST_METHOD(remove_left_leaf_node_test)
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
