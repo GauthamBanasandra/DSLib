@@ -324,7 +324,7 @@ namespace BST
 				for (auto item : data)
 				{
 					bst.insert(item);
-				}				
+				}
 
 				Assert::AreEqual(*min_element(data.begin(), data.end()), bst.find_min()->data);
 			}
@@ -345,5 +345,25 @@ namespace BST
 				Assert::AreEqual(*max_element(data.begin(), data.end()), bst.find_max()->data);
 			}
 		}
+
+		TEST_METHOD(search_sequence_test)
+		{
+			std::vector<int> data_queue{ 3, 1, 5, 0, 2, 4, 6 };
+			for (auto j = 0; j < data_queue.size(); ++j)
+			{
+				std::vector<int> data(data_queue.begin() + j, data_queue.end());
+				ds::bst<int> bst;
+				for (auto item : data)
+				{
+					bst.insert(item);
+				}
+
+				for (const auto& item : data)
+				{
+					Assert::AreEqual(true, bst.search(item));
+				}
+			}
+		}		
 	};
+
 }
