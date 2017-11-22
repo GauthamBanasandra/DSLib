@@ -24,9 +24,9 @@ namespace ds
 
 	private: // TODO : shared_ptr could be move rather than copied
 		std::shared_ptr<bin_tree::node<T>> successor_up(std::shared_ptr<bin_tree::node<T>> n);
-		std::shared_ptr<bin_tree::node<T>> successor_down(std::shared_ptr<bin_tree::node<T>> n);
+		std::shared_ptr<bin_tree::node<T>> leftmost_child(std::shared_ptr<bin_tree::node<T>> n);
 		std::shared_ptr<bin_tree::node<T>> predecessor_up(std::shared_ptr<bin_tree::node<T>> n);
-		std::shared_ptr<bin_tree::node<T>> predecessor_down(std::shared_ptr<bin_tree::node<T>> n);
+		std::shared_ptr<bin_tree::node<T>> rightmost_child(std::shared_ptr<bin_tree::node<T>> n);
 		std::shared_ptr<bin_tree::node<T>> insert(T &key, std::shared_ptr<bin_tree::node<T>> n);
 	};
 
@@ -76,7 +76,7 @@ namespace ds
 		// If there's a right child, then recurse down to find the left most child in this path
 		if (n->right_child != nullptr)
 		{
-			return successor_down(n->right_child);
+			return leftmost_child(n->right_child);
 		}
 
 		// If there's no right child but the node has an ancestor, 
@@ -105,7 +105,7 @@ namespace ds
 		// If there's a left child, then recurse down to find the right most child in this path
 		if (n->left_child != nullptr)
 		{
-			return predecessor_down(n->left_child);
+			return rightmost_child(n->left_child);
 		}
 
 		// If there's no left child but the node has an ancestor, 
@@ -120,14 +120,28 @@ namespace ds
 		return nullptr;
 	}
 
+	// The least element in a bst is the leftmost element of the tree
 	template <class T>
 	std::shared_ptr<bin_tree::node<T>> bst<T>::find_min()
 	{
+		if (this->root == nullptr)
+		{
+			return nullptr;
+		}
+
+		return leftmost_child(this->root);
 	}
 
+	// The greatest element in a bst is the rightmost element of the tree
 	template <class T>
 	std::shared_ptr<bin_tree::node<T>> bst<T>::find_max()
 	{
+		if (this->root == nullptr)
+		{
+			return nullptr;
+		}
+
+		return rightmost_child(this->root);
 	}
 
 	template <class T>
@@ -177,7 +191,7 @@ namespace ds
 		{
 			// Node to remove has both the children,
 			// so find the successor of the node to remove
-			auto successor = successor_down(n->right_child);
+			auto successor = leftmost_child(n->right_child);
 
 			// Successor renounces its lineage
 			auto successor_ancestor = successor->ancestor.lock();
@@ -272,11 +286,11 @@ namespace ds
 	}
 
 	template <class T>
-	std::shared_ptr<bin_tree::node<T>> bst<T>::successor_down(std::shared_ptr<bin_tree::node<T>> n)
+	std::shared_ptr<bin_tree::node<T>> bst<T>::leftmost_child(std::shared_ptr<bin_tree::node<T>> n)
 	{
 		if (n->left_child != nullptr)
 		{
-			return successor_down(n->left_child);
+			return leftmost_child(n->left_child);
 		}
 
 		return n;
@@ -300,11 +314,11 @@ namespace ds
 	}
 
 	template <class T>
-	std::shared_ptr<bin_tree::node<T>> bst<T>::predecessor_down(std::shared_ptr<bin_tree::node<T>> n)
+	std::shared_ptr<bin_tree::node<T>> bst<T>::rightmost_child(std::shared_ptr<bin_tree::node<T>> n)
 	{
 		if (n->right_child != nullptr)
 		{
-			return predecessor_down(n->right_child);
+			return rightmost_child(n->right_child);
 		}
 
 		return n;
