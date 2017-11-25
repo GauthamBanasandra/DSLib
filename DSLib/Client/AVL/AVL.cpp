@@ -9,7 +9,9 @@ int main(int argc, char* argv[])
 	{
 		avl.insert(item);
 	}
-
+	
+	double i = 0;
+	avl.insert(i);
 	avl.inorder();
 	return 0;
 }
