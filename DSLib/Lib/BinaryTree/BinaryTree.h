@@ -26,8 +26,8 @@ namespace ds
 		void preorder(bin_tree::node<T> *n, std::function<void(T &data)> &&visit_action);
 		void postorder(bin_tree::node<T> *n, std::function<void(T &data)> &&visit_action);
 		void inorder(bin_tree::node<T> *n, std::function<void(T &data)> &&visit_action);
-		big_int height();
-		big_int height(const std::shared_ptr<bin_tree::node<T>> &n);
+		long long height();
+		long long height(const std::shared_ptr<bin_tree::node<T>> &n);
 
 		// Insert and remove methods are pure virtual (derived class must implement them)
 		virtual std::shared_ptr<bin_tree::node<T>> insert(T& key) = 0;
@@ -95,13 +95,13 @@ namespace ds
 	}
 
 	template <class T>
-	typename binary_tree<T>::big_int binary_tree<T>::height()
+	long long binary_tree<T>::height()
 	{
 		return height(this->root);
 	}
 
 	template <class T>
-	typename binary_tree<T>::big_int binary_tree<T>::height(const std::shared_ptr<bin_tree::node<T>>& n)
+	long long binary_tree<T>::height(const std::shared_ptr<bin_tree::node<T>>& n)
 	{
 		if (n == nullptr)
 		{
