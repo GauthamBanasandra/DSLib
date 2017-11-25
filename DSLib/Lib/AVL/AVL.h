@@ -26,6 +26,8 @@ namespace ds
 
 		// Right rotation is performed for LL case - x is left child of y and y is left child of z
 		void right_rotate(const std::shared_ptr<bin_tree::node<T>> &n);
+		// Left rotation is performed for RR case - x is right child of y and y is right child of z
+		void left_rotate(const std::shared_ptr<bin_tree::node<T>> &n);
 		// Finds imbalance from the node n, imbalance info is provided as an out parameter
 		bool find_imbalance(const std::shared_ptr<bin_tree::node<T>> &n, imbalance_info<T> *out_info);
 	};
@@ -71,6 +73,37 @@ namespace ds
 
 		// 'child' should still be a left child or it may become the root node
 		assert(child->node_type == bin_tree::node_type::k_left_child || child->node_type == bin_tree::node_type::k_root);
+	}
+
+	// This is a mirror of right_rotate i.e. all 'left' will become 'right' irrespective of the context/type
+	template <class T>
+	void avl<T>::left_rotate(const std::shared_ptr<bin_tree::node<T>>& n)
+	{
+		auto child = n->right_child;
+		n->right_child = child->left_child;
+		if (n->right_child != nullptr)
+		{
+			n->right_child->ancestor = n;
+			n->right_child->node_type = bin_tree::node_type::k_right_child;
+		}
+
+		child->ancestor = n->ancestor;
+		if (n->node_type == bin_tree::node_type::k_root)
+		{
+			this->root = child;
+			child->node_type = bin_tree::node_type::k_root;
+		}
+		else
+		{
+			n->ancestor.lock()->right_child = child;
+		}
+
+		child->left_child = n;
+		n->ancestor = child;
+		n->node_type = bin_tree::node_type::k_left_child;
+
+		// 'child' should still be a right child or it may become the root node
+		assert(child->node_type == bin_tree::node_type::k_right_child || child->node_type == bin_tree::node_type::k_root);
 	}
 
 	template <class T>

@@ -4,14 +4,13 @@
 int main(int argc, char* argv[])
 {
 	ds::avl<double> avl;
-	//std::vector<double> data{ 3, 2, 4, 5, 1, 1.1 };
-	std::vector<double> data{ 2, 1 };
+	std::vector<double> data{ 3, 2, 4, 5, 1 };
 	for (auto &item : data)
 	{
 		avl.insert(item);
 	}
 
-	double i = 0;
+	double i = 6;
 	const auto insert = avl.insert(i);
 	std::cout << "Preorder:" << std::endl;
 	avl.preorder();	
@@ -40,8 +39,8 @@ int main(int argc, char* argv[])
 			break;
 		}
 
-		std::cout << "\nRight rotation" << std::endl;
-		avl.right_rotate(info.z);
+		std::cout << "\nLeft rotation" << std::endl;
+		avl.left_rotate(info.z);
 		std::cout << "\nPreorder:" << std::endl;
 		avl.preorder();
 		std::cout << "\nInorder:" << std::endl;
