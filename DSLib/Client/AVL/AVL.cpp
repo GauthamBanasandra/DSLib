@@ -4,19 +4,23 @@
 int main(int argc, char* argv[])
 {
 	ds::avl<double> avl;
-	std::vector<double> data{ 3, 2, 4, 5, 1 };
+	//std::vector<double> data{ 3, 2, 4, 5, 1, 1.1 };
+	std::vector<double> data{ 2, 1 };
 	for (auto &item : data)
 	{
 		avl.insert(item);
 	}
 
-	double i = 4.7;
+	double i = 0;
 	const auto insert = avl.insert(i);
+	std::cout << "Preorder:" << std::endl;
+	avl.preorder();	
+	std::cout << "\nInorder:" << std::endl;
 	avl.inorder();
-	/*ds::imbalance_info<double> info;
+	ds::imbalance_info<double> info;
 	if (avl.find_imbalance(insert, &info))
 	{
-		std::cout << "Imbalance:" << std::endl;
+		std::cout << "\nImbalance:" << std::endl;
 		std::cout << "z: " << info.z->data << std::endl;
 		std::cout << "y: " << info.y->data << std::endl;
 		std::cout << "x: " << info.x->data << std::endl;
@@ -36,8 +40,13 @@ int main(int argc, char* argv[])
 			break;
 		}
 
-		std::cout << std::endl;
-	}*/
+		std::cout << "\nRight rotation" << std::endl;
+		avl.right_rotate(info.z);
+		std::cout << "\nPreorder:" << std::endl;
+		avl.preorder();
+		std::cout << "\nInorder:" << std::endl;
+		avl.inorder();
+	}
 
 	return 0;
 }

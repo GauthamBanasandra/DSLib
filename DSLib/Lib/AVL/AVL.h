@@ -24,7 +24,8 @@ namespace ds
 	public:
 		std::shared_ptr<bin_tree::node<T>> insert(T& key) override;
 
-	private:
+		// Right rotation is performed for LL case - x is left child of y and y is left child of z
+		void right_rotate(const std::shared_ptr<bin_tree::node<T>> &n);
 		// Finds imbalance from the node n, imbalance info is provided as an out parameter
 		bool find_imbalance(const std::shared_ptr<bin_tree::node<T>> &n, imbalance_info<T> *out_info);
 	};
@@ -33,6 +34,43 @@ namespace ds
 	std::shared_ptr<bin_tree::node<T>> avl<T>::insert(T& key)
 	{
 		return bst<T>::insert(key);
+	}
+
+	// Right rotate on node n
+	template <class T>
+	void avl<T>::right_rotate(const std::shared_ptr<bin_tree::node<T>>& n)
+	{
+		auto child = n->left_child;
+		// n is adopting "child's" right child as its left child
+		n->left_child = child->right_child;
+		if (n->left_child != nullptr)
+		{
+			n->left_child->ancestor = n;
+			n->left_child->node_type = bin_tree::node_type::k_left_child;
+		}
+
+		// n's ancestor will adopt 'child'
+		child->ancestor = n->ancestor;
+		// child will now take the place of n
+		// So, if n was the root node, then child will be the new root
+		if (n->node_type == bin_tree::node_type::k_root)
+		{
+			this->root = child;
+			child->node_type = bin_tree::node_type::k_root;
+		}
+		else
+		{
+			// Make 'child' the left child of n's ancestor
+			n->ancestor.lock()->left_child = child;
+		}
+
+		// 'child' will now adopt n as its right child
+		child->right_child = n;
+		n->ancestor = child;
+		n->node_type = bin_tree::node_type::k_right_child;
+
+		// 'child' should still be a left child or it may become the root node
+		assert(child->node_type == bin_tree::node_type::k_left_child || child->node_type == bin_tree::node_type::k_root);
 	}
 
 	template <class T>
