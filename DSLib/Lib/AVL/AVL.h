@@ -30,6 +30,7 @@ namespace ds
 		void left_rotate(const std::shared_ptr<bin_tree::node<T>> &n);
 		// Finds imbalance from the node n, imbalance info is provided as an out parameter
 		bool find_imbalance(const std::shared_ptr<bin_tree::node<T>> &n, imbalance_info<T> *out_info);
+		void promote_child(const std::shared_ptr<bin_tree::node<T>> &parent, const std::shared_ptr<bin_tree::node<T>> &child);
 	};
 
 	template <class T>
@@ -51,20 +52,7 @@ namespace ds
 			n->left_child->node_type = bin_tree::node_type::k_left_child;
 		}
 
-		// n's ancestor will adopt 'child'
-		child->ancestor = n->ancestor;
-		// child will now take the place of n
-		// So, if n was the root node, then child will be the new root
-		if (n->node_type == bin_tree::node_type::k_root)
-		{
-			this->root = child;
-			child->node_type = bin_tree::node_type::k_root;
-		}
-		else
-		{
-			// Make 'child' the left child of n's ancestor
-			n->ancestor.lock()->left_child = child;
-		}
+		promote_child(n, child);
 
 		// 'child' will now adopt n as its right child
 		child->right_child = n;
@@ -87,16 +75,7 @@ namespace ds
 			n->right_child->node_type = bin_tree::node_type::k_right_child;
 		}
 
-		child->ancestor = n->ancestor;
-		if (n->node_type == bin_tree::node_type::k_root)
-		{
-			this->root = child;
-			child->node_type = bin_tree::node_type::k_root;
-		}
-		else
-		{
-			n->ancestor.lock()->right_child = child;
-		}
+		promote_child(n, child);
 
 		child->left_child = n;
 		n->ancestor = child;
@@ -114,6 +93,7 @@ namespace ds
 			return false;
 		}
 
+		// TODO : Need to find an optimal way to cache the node's height
 		auto left_child_height = bst<T>::height(n->left_child);
 		auto right_child_height = bst<T>::height(n->right_child);
 		auto height_diff = left_child_height - right_child_height;
@@ -162,5 +142,36 @@ namespace ds
 		}
 
 		return true;
+	}
+
+	template <class T>
+	void avl<T>::promote_child(const std::shared_ptr<bin_tree::node<T>>& parent,
+		const std::shared_ptr<bin_tree::node<T>>& child)
+	{
+		// parent's ancestor will adopt 'child'
+		child->ancestor = parent->ancestor;
+		switch (parent->node_type)
+		{
+		case bin_tree::node_type::k_root:
+			// child will now take the place of parent
+			// So, if parent was the root node, then child will be the new root
+			this->root = child;
+			child->node_type = bin_tree::node_type::k_root;
+			break;
+
+		case bin_tree::node_type::k_left_child:
+			// Make 'child' the left child of parent's ancestor
+			parent->ancestor.lock()->left_child = child;
+			break;
+
+		case bin_tree::node_type::k_right_child:
+			// Make 'child' the left child of parent's ancestor
+			parent->ancestor.lock()->right_child = child;
+			break;
+
+		default:
+			// Not handled for this node_type 
+			assert(false);
+		}
 	}
 }
