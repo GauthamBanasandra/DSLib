@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <iostream>
+#include <algorithm>
 
 namespace ds
 {
@@ -12,7 +13,7 @@ namespace ds
 		using big_int = unsigned long long;
 
 	public:
-		explicit binary_tree() : height(0), node_count(0) {}
+		explicit binary_tree() : node_count(0) {}
 		virtual ~binary_tree() = default;
 
 		// Traversal methods with visit_action as a lambda
@@ -25,13 +26,14 @@ namespace ds
 		void preorder(bin_tree::node<T> *n, std::function<void(T &data)> &&visit_action);
 		void postorder(bin_tree::node<T> *n, std::function<void(T &data)> &&visit_action);
 		void inorder(bin_tree::node<T> *n, std::function<void(T &data)> &&visit_action);
+		big_int height();
+		big_int height(const std::shared_ptr<bin_tree::node<T>> &n);
 
 		// Insert and remove methods are pure virtual (derived class must implement them)
 		virtual std::shared_ptr<bin_tree::node<T>> insert(T& key) = 0;
 		virtual bool remove(T key) = 0;
 
 		std::shared_ptr<bin_tree::node<T>> root;
-		big_int height;
 		big_int node_count;
 	};
 
@@ -90,5 +92,25 @@ namespace ds
 		inorder(n->left_child.get(), std::move(visit_action));
 		visit_action(n->data);
 		inorder(n->right_child.get(), std::move(visit_action));
+	}
+
+	template <class T>
+	typename binary_tree<T>::big_int binary_tree<T>::height()
+	{
+		return height(this->root);
+	}
+
+	template <class T>
+	typename binary_tree<T>::big_int binary_tree<T>::height(const std::shared_ptr<bin_tree::node<T>>& n)
+	{
+		if (n == nullptr)
+		{
+			return 0;
+		}
+
+		auto left_height = height(n->left_child);
+		auto right_height = height(n->right_child);
+
+		return std::max(left_height, right_height) + 1;
 	}
 }

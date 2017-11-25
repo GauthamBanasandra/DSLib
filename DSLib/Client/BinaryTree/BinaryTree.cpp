@@ -30,5 +30,7 @@ int main(int argc, char* argv[])
 	std::cout << "\nPostorder:" << std::endl;
 	bst.postorder();
 
+	// Height of the tree
+	std::cout << "\nHeight: " << bst.height() << std::endl;
 	return 0;
 }
