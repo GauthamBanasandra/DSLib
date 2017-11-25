@@ -8,6 +8,7 @@ namespace ds
 	class bst :public binary_tree<T>
 	{
 	public:
+		// TODO : This is redundant
 		bst() :binary_tree<T>() {}
 		~bst() {}
 

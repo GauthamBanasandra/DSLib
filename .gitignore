@@ -56,3 +56,5 @@
 /DSLib/Test/BST/Debug
 /DSLib/Client/BST/x64/Debug
 /DSLib/Test/BST/x64/Debug
+/DSLib/Client/AVL/Debug
+/DSLib/Lib/AVL/Debug
