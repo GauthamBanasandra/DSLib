@@ -24,12 +24,18 @@ namespace ds
 	public:
 		std::shared_ptr<bin_tree::node<T>> insert(T& key) override;
 
+		// Performs trinode restructuring to maintain the height of the binary tree log(h)
+		void restructure(const imbalance_info<T> const *info);
+
 		// Right rotation is performed for LL case - x is left child of y and y is left child of z
 		void right_rotate(const std::shared_ptr<bin_tree::node<T>> &n);
+
 		// Left rotation is performed for RR case - x is right child of y and y is right child of z
 		void left_rotate(const std::shared_ptr<bin_tree::node<T>> &n);
+		
 		// Finds imbalance from the node n, imbalance info is provided as an out parameter
 		bool find_imbalance(const std::shared_ptr<bin_tree::node<T>> &n, imbalance_info<T> *out_info);
+		
 		// Promotes child to be parent's peer
 		// Parent will transfer its ancestral relationship to child
 		void promote_child(const std::shared_ptr<bin_tree::node<T>> &parent, const std::shared_ptr<bin_tree::node<T>> &child);
@@ -39,6 +45,35 @@ namespace ds
 	std::shared_ptr<bin_tree::node<T>> avl<T>::insert(T& key)
 	{
 		return bst<T>::insert(key);
+	}
+
+	template <class T>
+	void avl<T>::restructure(const imbalance_info<T>* info)
+	{
+		switch (info->config)
+		{
+		case imbalance_config::k_ll:
+			right_rotate(info->z);
+			break;
+
+		case imbalance_config::k_lr:
+			left_rotate(info->y);
+			right_rotate(info->z);
+			break;
+
+		case imbalance_config::k_rr:
+			left_rotate(info->z);
+			break;
+
+		case imbalance_config::k_rl:
+			right_rotate(info->y);
+			left_rotate(info->z);
+			break;
+
+		default:
+			// Only 4 configurations are possible LL, LR, RR, RL
+			assert(false);
+		}
 	}
 
 	// Right rotate on node n

@@ -39,10 +39,8 @@ int main(int argc, char* argv[])
 			break;
 		}
 
-		std::cout << "\nRight rotation" << std::endl;
-		avl.right_rotate(info.y);
-		std::cout << "\nLeft rotation" << std::endl;
-		avl.left_rotate(info.z);
+		std::cout << "\nRestructuring" << std::endl;
+		avl.restructure(&info);
 		std::cout << "\nPreorder:" << std::endl;
 		avl.preorder();
 		std::cout << "\nInorder:" << std::endl;
