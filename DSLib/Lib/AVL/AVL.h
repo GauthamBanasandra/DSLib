@@ -24,18 +24,19 @@ namespace ds
 	public:
 		std::shared_ptr<bin_tree::node<T>> insert(T& key) override;
 
+	private:
 		// Performs trinode restructuring to maintain the height of the binary tree log(h)
-		void restructure(const imbalance_info<T> const *info);
+		void restructure(const imbalance_info<T> *info);
 
 		// Right rotation is performed for LL case - x is left child of y and y is left child of z
 		void right_rotate(const std::shared_ptr<bin_tree::node<T>> &n);
 
 		// Left rotation is performed for RR case - x is right child of y and y is right child of z
 		void left_rotate(const std::shared_ptr<bin_tree::node<T>> &n);
-		
+
 		// Finds imbalance from the node n, imbalance info is provided as an out parameter
 		bool find_imbalance(const std::shared_ptr<bin_tree::node<T>> &n, imbalance_info<T> *out_info);
-		
+
 		// Promotes child to be parent's peer
 		// Parent will transfer its ancestral relationship to child
 		void promote_child(const std::shared_ptr<bin_tree::node<T>> &parent, const std::shared_ptr<bin_tree::node<T>> &child);
@@ -44,7 +45,17 @@ namespace ds
 	template <class T>
 	std::shared_ptr<bin_tree::node<T>> avl<T>::insert(T& key)
 	{
-		return bst<T>::insert(key);
+		// Insert the key just like a BST
+		auto n = bst<T>::insert(key);
+		
+		// If there is any imbalance, then restructure the tree
+		imbalance_info<T> info;
+		if (find_imbalance(n, &info))
+		{
+			restructure(&info);
+		}
+
+		return n;
 	}
 
 	template <class T>
@@ -183,26 +194,26 @@ namespace ds
 		child->ancestor = parent->ancestor;
 		switch (parent->node_type)
 		{
-		// child will now take the place of parent
-		// So, if parent was the root node, then child will be the new root
+			// child will now take the place of parent
+			// So, if parent was the root node, then child will be the new root
 		case bin_tree::node_type::k_root:
 			this->root = child;
 			child->node_type = bin_tree::node_type::k_root;
 			break;
 
-		// Make 'child' the left child of parent's ancestor
+			// Make 'child' the left child of parent's ancestor
 		case bin_tree::node_type::k_left_child:
 			parent->ancestor.lock()->left_child = child;
 			child->node_type = bin_tree::node_type::k_left_child;
 			break;
 
-		// Make 'child' the right child of parent's ancestor
+			// Make 'child' the right child of parent's ancestor
 		case bin_tree::node_type::k_right_child:
 			parent->ancestor.lock()->right_child = child;
 			child->node_type = bin_tree::node_type::k_right_child;
 			break;
 
-		// Not handled for this node_type 
+			// Not handled for this node_type 
 		default:
 			assert(false);
 		}
