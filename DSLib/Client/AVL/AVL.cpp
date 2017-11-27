@@ -3,7 +3,7 @@
 
 int main(int argc, char* argv[])
 {
-	ds::avl<double> avl;
+	ds::bin_tree::avl<double> avl;
 	std::vector<double> data{ 3, 2, 4, 5, 1, 6 };
 	for (auto &item : data)
 	{
