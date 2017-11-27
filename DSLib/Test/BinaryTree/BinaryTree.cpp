@@ -11,7 +11,7 @@ namespace binary_tree
 		TEST_METHOD(inorder_test)
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
-			ds::bst<int> bst;
+			ds::bin_tree::bst<int> bst;
 			for (auto item : data)
 			{
 				bst.insert(item);
@@ -34,7 +34,7 @@ namespace binary_tree
 		TEST_METHOD(preorder_test)
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
-			ds::bst<int> bst;
+			ds::bin_tree::bst<int> bst;
 			for (auto item : data)
 			{
 				bst.insert(item);
@@ -57,7 +57,7 @@ namespace binary_tree
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
 
-			ds::bst<int> bst;
+			ds::bin_tree::bst<int> bst;
 			for (auto item : data)
 			{
 				bst.insert(item);
@@ -74,6 +74,6 @@ namespace binary_tree
 			{
 				Assert::AreEqual(expected[i], postorder[i]);
 			}
-		}		
+		}
 	};
 }

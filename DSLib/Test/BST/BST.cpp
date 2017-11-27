@@ -13,7 +13,7 @@ namespace BST
 		TEST_METHOD(search_test)
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
-			ds::bst<int> bst;
+			ds::bin_tree::bst<int> bst;
 			for (auto item : data)
 			{
 				bst.insert(item);
@@ -28,7 +28,7 @@ namespace BST
 		TEST_METHOD(successor_test)
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
-			ds::bst<int> bst;
+			ds::bin_tree::bst<int> bst;
 			for (auto item : data)
 			{
 				bst.insert(item);
@@ -49,7 +49,7 @@ namespace BST
 		TEST_METHOD(predecessor_test)
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
-			ds::bst<int> bst;
+			ds::bin_tree::bst<int> bst;
 			for (auto item : data)
 			{
 				bst.insert(item);
@@ -74,7 +74,7 @@ namespace BST
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
 
-			ds::bst<int> bst;
+			ds::bin_tree::bst<int> bst;
 			for (auto item : data)
 			{
 				bst.insert(item);
@@ -102,7 +102,7 @@ namespace BST
 		{
 			std::vector<float> data{ 3, 1, 5, 0, 2, 4, 6 };
 
-			ds::bst<float> bst;
+			ds::bin_tree::bst<float> bst;
 			for (auto item : data)
 			{
 				bst.insert(item);
@@ -132,7 +132,7 @@ namespace BST
 		{
 			std::vector<float> data{ 3, 1, 5, 0, 2, 4, 6, 5.5 };
 
-			ds::bst<float> bst;
+			ds::bin_tree::bst<float> bst;
 			for (auto item : data)
 			{
 				bst.insert(item);
@@ -162,7 +162,7 @@ namespace BST
 		{
 			std::vector<float> data{ 3, 1, 5, 0, 2, 4, 6, 7 };
 
-			ds::bst<float> bst;
+			ds::bin_tree::bst<float> bst;
 			for (auto item : data)
 			{
 				bst.insert(item);
@@ -192,7 +192,7 @@ namespace BST
 		{
 			std::vector<double> data{ 3, 1, 5, 0, 2, 4, 6, 5.5, 5.9 };
 
-			ds::bst<double> bst;
+			ds::bin_tree::bst<double> bst;
 			for (auto item : data)
 			{
 				bst.insert(item);
@@ -222,7 +222,7 @@ namespace BST
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
 
-			ds::bst<int> bst;
+			ds::bin_tree::bst<int> bst;
 			for (auto item : data)
 			{
 				bst.insert(item);
@@ -250,7 +250,7 @@ namespace BST
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
 
-			ds::bst<int> bst;
+			ds::bin_tree::bst<int> bst;
 			for (auto item : data)
 			{
 				bst.insert(item);
@@ -283,7 +283,7 @@ namespace BST
 			for (auto j = 0; j < data_queue.size(); ++j)
 			{
 				std::vector<int> data(data_queue.begin() + j, data_queue.end());
-				ds::bst<int> bst;
+				ds::bin_tree::bst<int> bst;
 				for (auto item : data)
 				{
 					bst.insert(item);
@@ -320,7 +320,7 @@ namespace BST
 			for (auto j = 0; j < data_queue.size(); ++j)
 			{
 				std::vector<int> data(data_queue.begin() + j, data_queue.end());
-				ds::bst<int> bst;
+				ds::bin_tree::bst<int> bst;
 				for (auto item : data)
 				{
 					bst.insert(item);
@@ -336,7 +336,7 @@ namespace BST
 			for (auto j = 0; j < data_queue.size(); ++j)
 			{
 				std::vector<int> data(data_queue.begin() + j, data_queue.end());
-				ds::bst<int> bst;
+				ds::bin_tree::bst<int> bst;
 				for (auto item : data)
 				{
 					bst.insert(item);
@@ -352,7 +352,7 @@ namespace BST
 			for (auto j = 0; j < data_queue.size(); ++j)
 			{
 				std::vector<int> data(data_queue.begin() + j, data_queue.end());
-				ds::bst<int> bst;
+				ds::bin_tree::bst<int> bst;
 				for (auto item : data)
 				{
 					bst.insert(item);
@@ -363,7 +363,7 @@ namespace BST
 					Assert::AreEqual(true, bst.search(item));
 				}
 			}
-		}		
+		}
 	};
 
 }

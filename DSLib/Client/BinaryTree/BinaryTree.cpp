@@ -5,7 +5,7 @@
 
 int main(int argc, char* argv[])
 {
-	ds::bst<int> bst;
+	ds::bin_tree::bst<int> bst;
 	std::vector<int> data{ 3, 1, 2, 4, 5, 0, 6 };
 	for (auto item : data)
 	{
