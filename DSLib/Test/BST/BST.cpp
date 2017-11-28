@@ -84,7 +84,7 @@ namespace BST
 			bst.remove(key);
 
 			std::vector<int> inorder;
-			bst.inorder([&inorder](int data) {inorder.push_back(data); });
+			bst.inorder([&inorder](std::shared_ptr<ds::bin_tree::node<int>> n) {inorder.push_back(n->data); });
 
 			std::vector<int> expected(data.begin(), data.end());
 			expected.erase(remove(expected.begin(), expected.end(), key), expected.end());
@@ -112,7 +112,7 @@ namespace BST
 			bst.remove(key);
 
 			std::vector<float> inorder;
-			bst.inorder([&inorder](float data) {inorder.push_back(data); });
+			bst.inorder([&inorder](std::shared_ptr<ds::bin_tree::node<float>> n) {inorder.push_back(n->data); });
 
 			std::vector<float> expected(data.begin(), data.end());
 			expected.erase(remove(expected.begin(), expected.end(), key), expected.end());
@@ -142,7 +142,7 @@ namespace BST
 			bst.remove(key);
 
 			std::vector<float> inorder;
-			bst.inorder([&inorder](float data) {inorder.push_back(data); });
+			bst.inorder([&inorder](std::shared_ptr<ds::bin_tree::node<float>> n) {inorder.push_back(n->data); });
 
 			std::vector<float> expected(data.begin(), data.end());
 			expected.erase(remove(expected.begin(), expected.end(), key), expected.end());
@@ -172,7 +172,7 @@ namespace BST
 			bst.remove(key);
 
 			std::vector<float> inorder;
-			bst.inorder([&inorder](float data) {inorder.push_back(data); });
+			bst.inorder([&inorder](std::shared_ptr<ds::bin_tree::node<float>> n) {inorder.push_back(n->data); });
 
 			std::vector<float> expected(data.begin(), data.end());
 			expected.erase(remove(expected.begin(), expected.end(), key), expected.end());
@@ -202,7 +202,7 @@ namespace BST
 			bst.remove(key);
 
 			std::vector<double> inorder;
-			bst.inorder([&inorder](double data) {inorder.push_back(data); });
+			bst.inorder([&inorder](std::shared_ptr<ds::bin_tree::node<double>> n) {inorder.push_back(n->data); });
 
 			std::vector<double> expected(data.begin(), data.end());
 			expected.erase(remove(expected.begin(), expected.end(), key), expected.end());
@@ -232,7 +232,7 @@ namespace BST
 			bst.remove(key);
 
 			std::vector<int> inorder;
-			bst.inorder([&inorder](int data) {inorder.push_back(data); });
+			bst.inorder([&inorder](std::shared_ptr<ds::bin_tree::node<int>> n) {inorder.push_back(n->data); });
 
 			std::vector<int> expected(data.begin(), data.end());
 			expected.erase(remove(expected.begin(), expected.end(), key), expected.end());
@@ -260,7 +260,7 @@ namespace BST
 			bst.remove(key);
 
 			std::vector<int> inorder;
-			bst.inorder([&inorder](int data) {inorder.push_back(data); });
+			bst.inorder([&inorder](std::shared_ptr<ds::bin_tree::node<int>> n) {inorder.push_back(n->data); });
 
 			std::vector<int> expected(data.begin(), data.end());
 			expected.erase(remove(expected.begin(), expected.end(), key), expected.end());
@@ -296,7 +296,7 @@ namespace BST
 				Logger::WriteMessage(msg.c_str());
 
 				std::vector<int> inorder;
-				bst.inorder([&inorder](int data) {inorder.push_back(data); });
+				bst.inorder([&inorder](std::shared_ptr<ds::bin_tree::node<int>> n) {inorder.push_back(n->data); });
 
 				std::vector<int> expected(data.begin(), data.end());
 				expected.erase(remove(expected.begin(), expected.end(), key), expected.end());

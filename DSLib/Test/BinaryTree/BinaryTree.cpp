@@ -19,7 +19,7 @@ namespace binary_tree
 
 			std::vector<int> inorder;
 
-			bst.inorder([&inorder](int data) {inorder.push_back(data); });
+			bst.inorder([&inorder](std::shared_ptr<ds::bin_tree::node<int>> n) {inorder.push_back(n->data); });
 
 			std::vector<int> expected(data.begin(), data.end());
 			sort(expected.begin(), expected.end());
@@ -42,7 +42,7 @@ namespace binary_tree
 
 			std::vector<int> preorder;
 
-			bst.preorder([&preorder](int data) {preorder.push_back(data); });
+			bst.preorder([&preorder](std::shared_ptr<ds::bin_tree::node<int>> n) {preorder.push_back(n->data); });
 
 			std::vector<int> expected{ 3, 1, 0, 2, 5, 4, 6 };
 			Assert::AreEqual(expected.size(), preorder.size());
@@ -65,7 +65,7 @@ namespace binary_tree
 
 			std::vector<int> postorder;
 
-			bst.postorder([&postorder](int data) {postorder.push_back(data); });
+			bst.postorder([&postorder](std::shared_ptr<ds::bin_tree::node<int>> n) {postorder.push_back(n->data); });
 
 			std::vector<int> expected{ 0, 2, 1, 4, 6, 5, 3 };
 			Assert::AreEqual(expected.size(), postorder.size());

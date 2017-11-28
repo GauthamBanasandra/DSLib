@@ -19,15 +19,15 @@ namespace ds
 			virtual ~binary_tree() = default;
 
 			// Traversal methods with visit_action as a lambda
-			void preorder(std::function<void(T &data)> visit_action = [](T &data)->void {std::cout << data << '\n'; });
-			void postorder(std::function<void(T &data)> visit_action = [](T &data)->void {std::cout << data << '\n'; });
-			void inorder(std::function<void(T &data)> visit_action = [](T &data)->void {std::cout << data << '\n'; });
+			void preorder(std::function<void(std::shared_ptr<node<T>> n)> visit_action = [](std::shared_ptr<node<T>> n)->void {std::cout << n->data << '\n'; });
+			void postorder(std::function<void(std::shared_ptr<node<T>> n)> visit_action = [](std::shared_ptr<node<T>> n)->void {std::cout << n->data << '\n'; });
+			void inorder(std::function<void(std::shared_ptr<node<T>> n)> visit_action = [](std::shared_ptr<node<T>> n)->void {std::cout << n->data << '\n'; });
 
 			// C++ doesn't allow a member to be used as the default value (for node as root)
 			// Thus, we need expose traversal methods as wrappers of these functions
-			void preorder(node<T> *n, std::function<void(T &data)> &&visit_action);
-			void postorder(node<T> *n, std::function<void(T &data)> &&visit_action);
-			void inorder(node<T> *n, std::function<void(T &data)> &&visit_action);
+			void preorder(std::shared_ptr<node<T>> n, std::function<void(std::shared_ptr<node<T>>)> &&visit_action);
+			void postorder(std::shared_ptr<node<T>> n, std::function<void(std::shared_ptr<node<T>>)> &&visit_action);
+			void inorder(std::shared_ptr<node<T>> n, std::function<void(std::shared_ptr<node<T>>)> &&visit_action);
 			long long height();
 			long long height(const std::shared_ptr<node<T>> &n);
 
@@ -40,60 +40,60 @@ namespace ds
 		};
 
 		template <class T>
-		void binary_tree<T>::preorder(std::function<void(T &data)> visit_action)
+		void binary_tree<T>::preorder(std::function<void(std::shared_ptr<node<T>> n)> visit_action)
 		{
-			preorder(root.get(), std::move(visit_action));
+			preorder(root, std::move(visit_action));
 		}
 
 		template <class T>
-		void binary_tree<T>::postorder(std::function<void(T &data)> visit_action)
+		void binary_tree<T>::postorder(std::function<void(std::shared_ptr<node<T>> n)> visit_action)
 		{
-			postorder(root.get(), std::move(visit_action));
+			postorder(root, std::move(visit_action));
 		}
 
 		template <class T>
-		void binary_tree<T>::inorder(std::function<void(T &data)> visit_action)
+		void binary_tree<T>::inorder(std::function<void(std::shared_ptr<node<T>> n)> visit_action)
 		{
-			inorder(root.get(), std::move(visit_action));
+			inorder(root, std::move(visit_action));
 		}
 
 		template <class T>
-		void binary_tree<T>::preorder(node<T>* n, std::function<void(T& data)> &&visit_action)
+		void binary_tree<T>::preorder(std::shared_ptr<node<T>> n, std::function<void(std::shared_ptr<node<T>>)>&& visit_action)
 		{
 			if (n == nullptr)
 			{
 				return;
 			}
 
-			visit_action(n->data);
-			preorder(n->left_child.get(), std::move(visit_action));
-			preorder(n->right_child.get(), std::move(visit_action));
+			visit_action(n);
+			preorder(n->left_child, std::move(visit_action));
+			preorder(n->right_child, std::move(visit_action));
 		}
 
 		template <class T>
-		void binary_tree<T>::postorder(node<T>* n, std::function<void(T& data)>&& visit_action)
+		void binary_tree<T>::postorder(std::shared_ptr<node<T>> n, std::function<void(std::shared_ptr<node<T>>)>&& visit_action)
 		{
 			if (n == nullptr)
 			{
 				return;
 			}
 
-			postorder(n->left_child.get(), std::move(visit_action));
-			postorder(n->right_child.get(), std::move(visit_action));
-			visit_action(n->data);
+			postorder(n->left_child, std::move(visit_action));
+			postorder(n->right_child, std::move(visit_action));
+			visit_action(n);
 		}
 
 		template <class T>
-		void binary_tree<T>::inorder(node<T>* n, std::function<void(T& data)>&& visit_action)
+		void binary_tree<T>::inorder(std::shared_ptr<node<T>> n, std::function<void(std::shared_ptr<node<T>>)>&& visit_action)
 		{
 			if (n == nullptr)
 			{
 				return;
 			}
 
-			inorder(n->left_child.get(), std::move(visit_action));
-			visit_action(n->data);
-			inorder(n->right_child.get(), std::move(visit_action));
+			inorder(n->left_child, std::move(visit_action));
+			visit_action(n);
+			inorder(n->right_child, std::move(visit_action));
 		}
 
 		template <class T>
