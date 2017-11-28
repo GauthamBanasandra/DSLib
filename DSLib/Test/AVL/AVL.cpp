@@ -1,16 +1,17 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include <algorithm>
-#include <queue>
+#include <cassert>
+#include <vector>
+#include "AVL.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace BST
+namespace AVL
 {
 	template<class T>
-	void do_lineage_test(ds::bin_tree::bst<T> bst)
+	void do_lineage_test(ds::bin_tree::avl<T> avl)
 	{
-		bst.inorder([](std::shared_ptr<ds::bin_tree::node<T>>n)
+		avl.inorder([](std::shared_ptr<ds::bin_tree::node<T>>n)
 		{
 			const auto &ancestor = n->ancestor.lock();
 			switch (n->node_type)
@@ -46,12 +47,12 @@ namespace BST
 	}
 
 	template<class T>
-	void do_remove_test(ds::bin_tree::bst<T> bst, T key, std::vector<T> data)
+	void do_remove_test(ds::bin_tree::avl<T> avl, T key, std::vector<T> data)
 	{
-		bst.remove(key);
+		avl.remove(key);
 
 		std::vector<T> inorder;
-		bst.inorder([&inorder](std::shared_ptr<ds::bin_tree::node<T>> n) {inorder.push_back(n->data); });
+		avl.inorder([&inorder](std::shared_ptr<ds::bin_tree::node<T>> n) {inorder.push_back(n->data); });
 
 		std::vector<T> expected(data.begin(), data.end());
 		expected.erase(remove(expected.begin(), expected.end(), key), expected.end());
@@ -66,41 +67,40 @@ namespace BST
 			Assert::AreEqual(expected[i], inorder[i]);
 		}
 	}
-
-	TEST_CLASS(bst)
+	TEST_CLASS(avl)
 	{
 	public:
 		TEST_METHOD(search_test)
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
-			ds::bin_tree::bst<int> bst;
+			ds::bin_tree::avl<int> avl;
 			for (auto item : data)
 			{
-				bst.insert(item);
+				avl.insert(item);
 			}
 
-			Assert::AreEqual(true, bst.search(0));
-			Assert::AreEqual(true, bst.search(6));
-			Assert::AreEqual(false, bst.search(-6));
-			Assert::AreEqual(false, bst.search(7));
+			Assert::AreEqual(true, avl.search(0));
+			Assert::AreEqual(true, avl.search(6));
+			Assert::AreEqual(false, avl.search(-6));
+			Assert::AreEqual(false, avl.search(7));
 		}
 
 		TEST_METHOD(successor_test)
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
-			ds::bin_tree::bst<int> bst;
+			ds::bin_tree::avl<int> avl;
 			for (auto item : data)
 			{
-				bst.insert(item);
+				avl.insert(item);
 			}
 
 			for (auto i = 0; i < data.size() - 1; ++i)
 			{
-				const auto successor_node = bst.successor(i);
+				const auto successor_node = avl.successor(i);
 				Assert::AreEqual(i + 1, successor_node->data);
 			}
 
-			if (bst.successor(data[data.size() - 1]) != nullptr)
+			if (avl.successor(data[data.size() - 1]) != nullptr)
 			{
 				Assert::Fail(L"Successor of the greatest element exists");
 			}
@@ -109,19 +109,19 @@ namespace BST
 		TEST_METHOD(predecessor_test)
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
-			ds::bin_tree::bst<int> bst;
+			ds::bin_tree::avl<int> avl;
 			for (auto item : data)
 			{
-				bst.insert(item);
+				avl.insert(item);
 			}
 
 			for (int i = data.size() - 1; i > 0; --i)
 			{
-				const auto predecessor_node = bst.predecessor(i);
+				const auto predecessor_node = avl.predecessor(i);
 				Assert::AreEqual(i - 1, predecessor_node->data);
 			}
 
-			if (bst.predecessor(data[data.size() >> 1]) != nullptr)
+			if (avl.predecessor(data[data.size() >> 1]) != nullptr)
 			{
 				Assert::Fail(L"Predecessor of the least element exists");
 			}
@@ -130,31 +130,31 @@ namespace BST
 		TEST_METHOD(lineage_test)
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
-			ds::bin_tree::bst<int> bst;
+			ds::bin_tree::avl<int> avl;
 			for (auto item : data)
 			{
-				bst.insert(item);
-				do_lineage_test(bst);
+				avl.insert(item);
+				do_lineage_test(avl);
 			}
 		}
 	};
 
-	TEST_CLASS(bst_node_removal)
+	TEST_CLASS(avl_node_removal)
 	{
 		TEST_METHOD(lineage_test_remove_node)
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
 
-			ds::bin_tree::bst<int> bst;
+			ds::bin_tree::avl<int> avl;
 			for (auto item : data)
 			{
-				bst.insert(item);
+				avl.insert(item);
 			}
 
 			for (auto item : data)
 			{
-				do_lineage_test(bst);
-				bst.remove(item);
+				do_lineage_test(avl);
+				avl.remove(item);
 			}
 		}
 
@@ -162,108 +162,107 @@ namespace BST
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
 
-			ds::bin_tree::bst<int> bst;
+			ds::bin_tree::avl<int> avl;
 			for (auto item : data)
 			{
-				bst.insert(item);
+				avl.insert(item);
 			}
 
 			const auto key = 4;
-			do_remove_test(bst, key, data);
-			do_lineage_test(bst);
+			do_remove_test(avl, key, data);
+			do_lineage_test(avl);
 		}
 
 		TEST_METHOD(remove_node_with_2_children_test)
 		{
 			std::vector<float> data{ 3, 1, 5, 0, 2, 4, 6 };
 
-			ds::bin_tree::bst<float> bst;
+			ds::bin_tree::avl<float> avl;
 			for (auto item : data)
 			{
-				bst.insert(item);
+				avl.insert(item);
 			}
 
 			const float key = 5;
-			do_remove_test(bst, key, data);
-			do_lineage_test(bst);
+			do_remove_test(avl, key, data);
+			do_lineage_test(avl);
 		}
 
 		TEST_METHOD(remove_internal_node_with_successor_as_leaf_test)
 		{
 			std::vector<float> data{ 3, 1, 5, 0, 2, 4, 6, 5.5 };
 
-			ds::bin_tree::bst<float> bst;
+			ds::bin_tree::avl<float> avl;
 			for (auto item : data)
 			{
-				bst.insert(item);
+				avl.insert(item);
 			}
 
 			const float key = 5;
-			do_remove_test(bst, key, data);
-			do_lineage_test(bst);
+			do_remove_test(avl, key, data);
+			do_lineage_test(avl);
 		}
 
 		TEST_METHOD(remove_internal_node_with_immediate_successor_test)
 		{
 			std::vector<float> data{ 3, 1, 5, 0, 2, 4, 6, 7 };
 
-			ds::bin_tree::bst<float> bst;
+			ds::bin_tree::avl<float> avl;
 			for (auto item : data)
 			{
-				bst.insert(item);
+				avl.insert(item);
 			}
 
 			const float key = 5;
-			do_remove_test(bst, key, data);
-			do_lineage_test(bst);
+			do_remove_test(avl, key, data);
+			do_lineage_test(avl);
 		}
 
 		TEST_METHOD(remove_internal_node_with_successor_having_subtree_test)
 		{
 			std::vector<double> data{ 3, 1, 5, 0, 2, 4, 6, 5.5, 5.9 };
 
-			ds::bin_tree::bst<double> bst;
+			ds::bin_tree::avl<double> avl;
 			for (auto item : data)
 			{
-				bst.insert(item);
+				avl.insert(item);
 			}
 
 			const double key = 5;
-			do_remove_test(bst, key, data);
-			do_lineage_test(bst);
+			do_remove_test(avl, key, data);
+			do_lineage_test(avl);
 		}
 
 		TEST_METHOD(remove_right_leaf_node_test)
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
 
-			ds::bin_tree::bst<int> bst;
+			ds::bin_tree::avl<int> avl;
 			for (auto item : data)
 			{
-				bst.insert(item);
+				avl.insert(item);
 			}
 
 			const auto key = 6;
-			do_remove_test(bst, key, data);
-			do_lineage_test(bst);
+			do_remove_test(avl, key, data);
+			do_lineage_test(avl);
 		}
 
 		TEST_METHOD(remove_root_node_test)
 		{
 			std::vector<int> data{ 3, 1, 5, 0, 2, 4, 6 };
 
-			ds::bin_tree::bst<int> bst;
+			ds::bin_tree::avl<int> avl;
 			for (auto item : data)
 			{
-				bst.insert(item);
+				avl.insert(item);
 			}
 
 			const auto key = 3;
-			// TODO : This test fails when 262 - 277 is commented out
-			bst.remove(key);
+			avl.remove(key);
 
 			std::vector<int> inorder;
-			bst.inorder([&inorder](std::shared_ptr<ds::bin_tree::node<int>> n) {inorder.push_back(n->data); });
+			avl.inorder([&inorder](std::shared_ptr<ds::bin_tree::node<int>> n) {inorder.push_back(n->data); });
 
 			std::vector<int> expected(data.begin(), data.end());
 			expected.erase(remove(expected.begin(), expected.end(), key), expected.end());
@@ -276,8 +275,8 @@ namespace BST
 				Assert::AreEqual(expected[i], inorder[i]);
 			}
 
-			do_remove_test(bst, key, data);
-			do_lineage_test(bst);
+			do_remove_test(avl, key, data);
+			do_lineage_test(avl);
 		}
 	};
 
@@ -289,14 +288,14 @@ namespace BST
 			for (auto j = 0; j < data_queue.size(); ++j)
 			{
 				std::vector<int> data(data_queue.begin() + j, data_queue.end());
-				ds::bin_tree::bst<int> bst;
+				ds::bin_tree::avl<int> avl;
 				for (auto item : data)
 				{
-					bst.insert(item);
+					avl.insert(item);
 				}
 
 				const auto key = data_queue[j];
-				do_remove_test(bst, key, data);
+				do_remove_test(avl, key, data);
 			}
 		}
 
@@ -306,13 +305,13 @@ namespace BST
 			for (auto j = 0; j < data_queue.size(); ++j)
 			{
 				std::vector<int> data(data_queue.begin() + j, data_queue.end());
-				ds::bin_tree::bst<int> bst;
+				ds::bin_tree::avl<int> avl;
 				for (auto item : data)
 				{
-					bst.insert(item);
+					avl.insert(item);
 				}
 
-				Assert::AreEqual(*min_element(data.begin(), data.end()), bst.find_min()->data);
+				Assert::AreEqual(*min_element(data.begin(), data.end()), avl.find_min()->data);
 			}
 		}
 
@@ -322,13 +321,13 @@ namespace BST
 			for (auto j = 0; j < data_queue.size(); ++j)
 			{
 				std::vector<int> data(data_queue.begin() + j, data_queue.end());
-				ds::bin_tree::bst<int> bst;
+				ds::bin_tree::avl<int> avl;
 				for (auto item : data)
 				{
-					bst.insert(item);
+					avl.insert(item);
 				}
 
-				Assert::AreEqual(*max_element(data.begin(), data.end()), bst.find_max()->data);
+				Assert::AreEqual(*max_element(data.begin(), data.end()), avl.find_max()->data);
 			}
 		}
 
@@ -338,15 +337,15 @@ namespace BST
 			for (auto j = 0; j < data_queue.size(); ++j)
 			{
 				std::vector<int> data(data_queue.begin() + j, data_queue.end());
-				ds::bin_tree::bst<int> bst;
+				ds::bin_tree::avl<int> avl;
 				for (auto item : data)
 				{
-					bst.insert(item);
+					avl.insert(item);
 				}
 
 				for (const auto& item : data)
 				{
-					Assert::AreEqual(true, bst.search(item));
+					Assert::AreEqual(true, avl.search(item));
 				}
 			}
 		}
