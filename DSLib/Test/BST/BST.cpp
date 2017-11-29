@@ -46,7 +46,7 @@ namespace BST
 	}
 
 	template<class T>
-	void do_remove_test(ds::bin_tree::bst<T> bst, T key, std::vector<T> data)
+	void do_remove_test(ds::bin_tree::bst<T> &bst, T key, std::vector<T> data)
 	{
 		bst.remove(key);
 
@@ -259,23 +259,8 @@ namespace BST
 			}
 
 			const auto key = 3;
-			// TODO : This test fails when 262 - 277 is commented out
-			bst.remove(key);
-
-			std::vector<int> inorder;
-			bst.inorder([&inorder](std::shared_ptr<ds::bin_tree::node<int>> n) {inorder.push_back(n->data); });
-
-			std::vector<int> expected(data.begin(), data.end());
-			expected.erase(remove(expected.begin(), expected.end(), key), expected.end());
-			sort(expected.begin(), expected.end());
-
-			Assert::AreEqual(expected.size(), inorder.size());
-
-			for (decltype(inorder.size()) i = 0; i < inorder.size(); ++i)
-			{
-				Assert::AreEqual(expected[i], inorder[i]);
-			}
-
+			// TODO : Nodes are expiring when bst is passed by value
+			// Figure out why
 			do_remove_test(bst, key, data);
 			do_lineage_test(bst);
 		}

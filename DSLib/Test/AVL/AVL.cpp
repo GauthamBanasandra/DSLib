@@ -47,7 +47,7 @@ namespace AVL
 	}
 
 	template<class T>
-	void do_remove_test(ds::bin_tree::avl<T> avl, T key, std::vector<T> data)
+	void do_remove_test(ds::bin_tree::avl<T> &avl, T key, std::vector<T> data)
 	{
 		avl.remove(key);
 
@@ -259,22 +259,6 @@ namespace AVL
 			}
 
 			const auto key = 3;
-			avl.remove(key);
-
-			std::vector<int> inorder;
-			avl.inorder([&inorder](std::shared_ptr<ds::bin_tree::node<int>> n) {inorder.push_back(n->data); });
-
-			std::vector<int> expected(data.begin(), data.end());
-			expected.erase(remove(expected.begin(), expected.end(), key), expected.end());
-			sort(expected.begin(), expected.end());
-
-			Assert::AreEqual(expected.size(), inorder.size());
-
-			for (decltype(inorder.size()) i = 0; i < inorder.size(); ++i)
-			{
-				Assert::AreEqual(expected[i], inorder[i]);
-			}
-
 			do_remove_test(avl, key, data);
 			do_lineage_test(avl);
 		}
