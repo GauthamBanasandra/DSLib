@@ -9,7 +9,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 namespace AVL
 {
 	template<class T>
-	void do_lineage_test(ds::bin_tree::avl<T> avl)
+	void do_lineage_test(ds::bin_tree::avl<T> &avl)
 	{
 		avl.inorder([](std::shared_ptr<ds::bin_tree::node<T>>n)
 		{
@@ -67,6 +67,28 @@ namespace AVL
 			Assert::AreEqual(expected[i], inorder[i]);
 		}
 	}
+
+	template<class T>
+	void do_inorder_test(ds::bin_tree::avl<T> &avl, std::vector<T> &data)
+	{
+		// Expected values
+		auto expected = data;
+		sort(expected.begin(), expected.end());
+
+		// Output
+		std::vector<T> output;
+		avl.inorder([&output](std::shared_ptr<ds::bin_tree::node<T>> n)
+		{
+			output.push_back(n->data);
+		});
+
+		Assert::AreEqual(expected.size(), output.size(), L"Sizes of expected and output vectors must be same");
+		for (auto i = 0; i < expected.size(); ++i)
+		{
+			Assert::AreEqual(expected[i], output[i], L"Elements must be equal");
+		}
+	}
+
 	TEST_CLASS(avl)
 	{
 	public:
@@ -331,6 +353,70 @@ namespace AVL
 				{
 					Assert::AreEqual(true, avl.search(item));
 				}
+			}
+		}
+	};
+
+	TEST_CLASS(random_data)
+	{
+		TEST_METHOD(inorder_test)
+		{			
+			const auto data_size = 1000;
+			const auto seed = static_cast<unsigned>(time(nullptr));
+			
+			// Log the seed
+			auto msg = "Seed: " + std::to_string(seed);
+			Logger::WriteMessage(msg.c_str());
+			
+			srand(seed);
+
+			std::vector<int> data;
+			for (auto i = 0; i < data_size; ++i)
+			{
+				data.push_back(rand());
+			}
+
+			ds::bin_tree::avl<int> avl;
+			for (auto& item : data)
+			{
+				avl.insert(item);
+			}
+
+			do_inorder_test(avl, data);
+			do_lineage_test(avl);
+		}
+
+		TEST_METHOD(remove_random_test)
+		{
+			const auto data_size = 1000;
+			const auto seed = static_cast<unsigned>(time(nullptr));
+
+			// Log the seed
+			auto msg = "Seed: " + std::to_string(seed);
+			Logger::WriteMessage(msg.c_str());
+
+			srand(seed);
+
+			std::vector<int> data;
+			for (auto i = 0; i < data_size; ++i)
+			{
+				data.push_back(rand());
+			}
+
+			ds::bin_tree::avl<int> avl;
+			for (auto& item : data)
+			{
+				avl.insert(item);
+			}
+
+			// Remove random nodes until the tree is empty
+			while (!data.empty())
+			{
+				const auto rand_idx = rand() % data.size();
+				Assert::IsTrue(avl.remove(data[rand_idx]), L"Element must be present in the tree");
+				data.erase(data.begin() + rand_idx);
+				do_inorder_test(avl, data);
+				do_lineage_test(avl);
 			}
 		}
 	};
