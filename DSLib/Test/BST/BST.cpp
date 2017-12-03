@@ -336,4 +336,40 @@ namespace BST
 			}
 		}
 	};
+
+	TEST_CLASS(random_data)
+	{
+		TEST_METHOD(height_test_node_insertion)
+		{
+			const auto data_size = 1000;
+			const auto seed = static_cast<unsigned>(time(nullptr));
+
+			// Log the seed
+			auto msg = "Seed: " + std::to_string(seed) + "\n";
+			Logger::WriteMessage(msg.c_str());
+
+			srand(seed);
+
+			std::vector<int> data;
+			for (auto i = 0; i < data_size; ++i)
+			{
+				data.push_back(rand());
+			}
+
+			ds::bin_tree::bst<int> bst;
+			for (auto& item : data)
+			{
+				bst.insert(item);
+			}
+
+			bst.inorder([](std::shared_ptr<ds::bin_tree::node<int>> n)
+			{
+				auto expected = ds::bin_tree::bst<int>::height(n);
+				auto actual = n->height;
+				auto msg = "Expected: " + std::to_string(expected) + "\tActual: " + std::to_string(actual) + "\n";
+				Logger::WriteMessage(msg.c_str());
+				Assert::IsTrue(expected == actual);
+			});
+		}
+	};
 }

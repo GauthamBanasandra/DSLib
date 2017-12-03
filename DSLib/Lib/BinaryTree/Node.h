@@ -13,16 +13,17 @@ namespace ds
 		{
 		public:
 			virtual ~node() = default;
-			explicit node(T data, const node_type node_type) : data(data), node_type(node_type)
+			explicit node(T data, const node_type node_type) : data(data), height(1), node_type(node_type)
 			{
 			}
 
 			bool is_leaf() { return left_child == nullptr && right_child == nullptr; }
 			void replace(std::shared_ptr<node<T>> &root, std::shared_ptr<node<T>> &other);
-			void copy_data_to(std::shared_ptr<node<T>> other) { other->data = this->data; }
-			static void remove(std::shared_ptr<node<T>> &other);
+			void copy_data_to(std::shared_ptr<node<T>> other) { other->data = this->data; }			
+			static void remove(std::shared_ptr<node<T>> &other);			
 
 			T data;
+			long long height;
 			node_type node_type;
 			std::weak_ptr<node> ancestor;
 			std::shared_ptr<node> left_child;
