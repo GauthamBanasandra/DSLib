@@ -31,7 +31,7 @@ namespace ds
 			std::shared_ptr<node<T>> leftmost_child(std::shared_ptr<node<T>> n);
 			std::shared_ptr<node<T>> predecessor_up(std::shared_ptr<node<T>> n);
 			std::shared_ptr<node<T>> rightmost_child(std::shared_ptr<node<T>> n);
-			std::shared_ptr<node<T>> insert(T &key, std::shared_ptr<node<T>> n);
+			std::shared_ptr<node<T>> insert(T &key, std::shared_ptr<node<T>> n, node_type node_type);
 			static long long get_height(std::shared_ptr<node<T>> n) { return n == nullptr ? 0 : n->height; }
 		};
 
@@ -152,16 +152,13 @@ namespace ds
 		template <class T>
 		std::shared_ptr<node<T>> bst<T>::insert(T& key)
 		{
-			// TODO : Try to implement a concise solution of insertion. Could follow - http://www.geeksforgeeks.org/avl-tree-set-1-insertion/
+			const auto n = insert(key, this->root, node_type::k_root);
 			if (this->root == nullptr)
 			{
-				this->root = std::make_shared<node<T>>(key, node_type::k_root);
-				return this->root;
+				this->root = n;
 			}
 
-			auto inserted_node = insert(key, this->root);
-			this->root->height = std::max(get_height(this->root->left_child), get_height(this->root->right_child)) + 1;
-			return inserted_node;
+			return n;
 		}
 
 		template <class T>
@@ -333,34 +330,26 @@ namespace ds
 		}
 
 		template <class T>
-		std::shared_ptr<node<T>> bst<T>::insert(T& key, std::shared_ptr<node<T>> n)
+		std::shared_ptr<node<T>> bst<T>::insert(T& key, std::shared_ptr<node<T>> n, node_type node_type)
 		{
+			if (n == nullptr)
+			{
+				return std::make_shared<node<T>>(key, node_type);
+			}
+
 			if (key <= n->data)
 			{
-				if (n->left_child == nullptr)
-				{
-					n->left_child = std::make_shared<node<T>>(key, node_type::k_left_child);
-					n->left_child->ancestor = n;
-					n->height = std::max(get_height(n->left_child), get_height(n->right_child)) + 1;
-					return n->left_child;
-				}
-
-				auto inserted_node = insert(key, n->left_child);
-				n->height = std::max(get_height(n->left_child), get_height(n->right_child)) + 1;
-				return inserted_node;
+				n->left_child = insert(key, n->left_child, node_type::k_left_child);
+				n->left_child->ancestor = n;
 			}
-
-			if (n->right_child == nullptr)
+			else
 			{
-				n->right_child = std::make_shared<node<T>>(key, node_type::k_right_child);
+				n->right_child = insert(key, n->right_child, node_type::k_right_child);
 				n->right_child->ancestor = n;
-				n->height = std::max(get_height(n->left_child), get_height(n->right_child)) + 1;
-				return n->right_child;
 			}
 
-			auto inserted_node = insert(key, n->right_child);
 			n->height = std::max(get_height(n->left_child), get_height(n->right_child)) + 1;
-			return inserted_node;
+			return n;
 		}
 	}
 }
