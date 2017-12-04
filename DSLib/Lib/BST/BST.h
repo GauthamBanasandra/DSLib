@@ -31,7 +31,7 @@ namespace ds
 			std::shared_ptr<node<T>> leftmost_child(std::shared_ptr<node<T>> n);
 			std::shared_ptr<node<T>> predecessor_up(std::shared_ptr<node<T>> n);
 			std::shared_ptr<node<T>> rightmost_child(std::shared_ptr<node<T>> n);
-			virtual std::shared_ptr<node<T>> insert(T &key, std::shared_ptr<node<T>> n, node_type node_type);
+			virtual std::shared_ptr<node<T>> insert(T &key, std::shared_ptr<node<T>> &n, node_type node_type);
 		};
 
 		template <class T>
@@ -329,7 +329,7 @@ namespace ds
 		}
 
 		template <class T>
-		std::shared_ptr<node<T>> bst<T>::insert(T& key, std::shared_ptr<node<T>> n, node_type node_type)
+		std::shared_ptr<node<T>> bst<T>::insert(T& key, std::shared_ptr<node<T>>& n, node_type node_type)
 		{
 			if (n == nullptr)
 			{

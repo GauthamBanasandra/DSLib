@@ -27,7 +27,7 @@ namespace ds
 			std::shared_ptr<node<T>> insert(T& key) override;
 
 		private:
-			std::shared_ptr<node<T>> insert(T &key, std::shared_ptr<node<T>> n, node_type node_type) override;
+			std::shared_ptr<node<T>> insert(T &key, std::shared_ptr<node<T>> &n, node_type node_type) override;
 
 			// Performs trinode restructuring to maintain the height of the binary tree log(h)
 			// Returns the root of the restructured sub-tree
@@ -60,7 +60,7 @@ namespace ds
 		}
 
 		template <class T>
-		std::shared_ptr<node<T>> avl<T>::insert(T& key, std::shared_ptr<node<T>> n, node_type node_type)
+		std::shared_ptr<node<T>> avl<T>::insert(T& key, std::shared_ptr<node<T>>& n, node_type node_type)
 		{
 			// Insert the key just like a BST
 			if (n == nullptr)
