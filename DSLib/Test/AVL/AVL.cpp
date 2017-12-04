@@ -360,14 +360,14 @@ namespace AVL
 	TEST_CLASS(random_data)
 	{
 		TEST_METHOD(inorder_test)
-		{			
-			const auto data_size = 1000;
+		{
+			const auto data_size = 100000;
 			const auto seed = static_cast<unsigned>(time(nullptr));
-			
+
 			// Log the seed
 			auto msg = "Seed: " + std::to_string(seed);
 			Logger::WriteMessage(msg.c_str());
-			
+
 			srand(seed);
 
 			std::vector<int> data;

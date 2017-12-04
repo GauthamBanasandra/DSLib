@@ -31,8 +31,7 @@ namespace ds
 			std::shared_ptr<node<T>> leftmost_child(std::shared_ptr<node<T>> n);
 			std::shared_ptr<node<T>> predecessor_up(std::shared_ptr<node<T>> n);
 			std::shared_ptr<node<T>> rightmost_child(std::shared_ptr<node<T>> n);
-			std::shared_ptr<node<T>> insert(T &key, std::shared_ptr<node<T>> n, node_type node_type);
-			static long long get_height(std::shared_ptr<node<T>> n) { return n == nullptr ? 0 : n->height; }
+			virtual std::shared_ptr<node<T>> insert(T &key, std::shared_ptr<node<T>> n, node_type node_type);
 		};
 
 		template <class T>

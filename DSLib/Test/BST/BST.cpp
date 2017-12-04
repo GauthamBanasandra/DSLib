@@ -67,6 +67,27 @@ namespace BST
 		}
 	}
 
+	template<class T>
+	void do_inorder_test(ds::bin_tree::bst<T> &bst, std::vector<T> &data)
+	{
+		// Expected values
+		auto expected = data;
+		std::sort(expected.begin(), expected.end());
+
+		// Output
+		std::vector<T> output;
+		bst.inorder([&output](std::shared_ptr<ds::bin_tree::node<T>> n)
+		{
+			output.push_back(n->data);
+		});
+
+		Assert::AreEqual(expected.size(), output.size(), L"Sizes of expected and output vectors must be same");
+		for (auto i = 0; i < expected.size(); ++i)
+		{
+			Assert::AreEqual(expected[i], output[i], L"Elements must be equal");
+		}
+	}
+
 	TEST_CLASS(bst)
 	{
 	public:
@@ -339,6 +360,33 @@ namespace BST
 
 	TEST_CLASS(random_data)
 	{
+		TEST_METHOD(inorder_test)
+		{
+			const auto data_size = 100000;
+			const auto seed = static_cast<unsigned>(time(nullptr));
+
+			// Log the seed
+			auto msg = "Seed: " + std::to_string(seed);
+			Logger::WriteMessage(msg.c_str());
+
+			srand(seed);
+
+			std::vector<int> data;
+			for (auto i = 0; i < data_size; ++i)
+			{
+				data.push_back(rand());
+			}
+
+			ds::bin_tree::bst<int> bst;
+			for (auto& item : data)
+			{
+				bst.insert(item);
+			}
+
+			do_inorder_test(bst, data);
+			do_lineage_test(bst);
+		}
+
 		TEST_METHOD(height_test_node_insertion)
 		{
 			const auto data_size = 1000;

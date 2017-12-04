@@ -35,6 +35,11 @@ namespace ds
 			virtual std::shared_ptr<node<T>> insert(T& key) = 0;
 			virtual bool remove(T key) = 0;
 
+		protected:
+			// A utility function to get the height of the node
+			static long long get_height(std::shared_ptr<node<T>> n) { return n == nullptr ? 0 : n->height; }
+
+		public:
 			std::shared_ptr<node<T>> root;
 			big_int node_count;
 		};
