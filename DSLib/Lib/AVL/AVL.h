@@ -27,7 +27,7 @@ namespace ds
 			std::shared_ptr<node<T>> insert(T& key) override;
 
 		private:
-			std::shared_ptr<node<T>> insert(T &key, std::shared_ptr<node<T>> &n, node_type node_type) override;
+			std::shared_ptr<node<T>> insert(T &key, std::shared_ptr<node<T>> &n, std::shared_ptr<node<T>> &ancestor, node_type node_type);
 
 			// Performs trinode restructuring to maintain the height of the binary tree log(h)
 			// Returns the root of the restructured sub-tree
@@ -50,33 +50,33 @@ namespace ds
 		template <class T>
 		std::shared_ptr<node<T>> avl<T>::insert(T& key)
 		{
-			const auto &n = insert(key, this->root, node_type::k_root);
 			if (this->root == nullptr)
 			{
-				this->root = n;
+				this->root = std::make_shared<node<T>>(key, node_type::k_root);
+				return this->root;
 			}
 
-			return n;
+			return insert(key, this->root, this->root, node_type::k_root);
 		}
 
 		template <class T>
-		std::shared_ptr<node<T>> avl<T>::insert(T& key, std::shared_ptr<node<T>>& n, node_type node_type)
+		std::shared_ptr<node<T>> avl<T>::insert(T& key, std::shared_ptr<node<T>>& n, std::shared_ptr<node<T>>& ancestor, node_type node_type)
 		{
 			// Insert the key just like a BST
 			if (n == nullptr)
 			{
-				return std::make_shared<node<T>>(key, node_type);
+				auto new_node = std::make_shared<node<T>>(key, node_type);
+				new_node->ancestor = ancestor;
+				return new_node;
 			}
 
 			if (key <= n->data)
 			{
-				n->left_child = insert(key, n->left_child, node_type::k_left_child);
-				n->left_child->ancestor = n;
+				n->left_child = insert(key, n->left_child, n, node_type::k_left_child);
 			}
 			else
 			{
-				n->right_child = insert(key, n->right_child, node_type::k_right_child);
-				n->right_child->ancestor = n;
+				n->right_child = insert(key, n->right_child, n, node_type::k_right_child);
 			}
 
 			n->height = std::max(get_height(n->left_child), get_height(n->right_child)) + 1;
