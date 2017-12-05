@@ -37,7 +37,7 @@ namespace ds
 
 		protected:
 			// A utility function to get the height of the node
-			static long long get_height(std::shared_ptr<node<T>> n) { return n == nullptr ? 0 : n->height; }
+			static long long get_height(std::shared_ptr<node<T>> &n) { return n == nullptr ? 0 : n->height; }
 
 		public:
 			std::shared_ptr<node<T>> root;

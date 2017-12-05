@@ -50,7 +50,7 @@ namespace ds
 		template <class T>
 		std::shared_ptr<node<T>> avl<T>::insert(T& key)
 		{
-			const auto n = insert(key, this->root, node_type::k_root);
+			const auto &n = insert(key, this->root, node_type::k_root);
 			if (this->root == nullptr)
 			{
 				this->root = n;
@@ -175,7 +175,7 @@ namespace ds
 				return false;
 			}
 
-			auto height_diff = get_height(n->left_child) - get_height(n->right_child);
+			const auto &height_diff = get_height(n->left_child) - get_height(n->right_child);
 
 			// If the height difference between left and right children is 0, 1 or -1, there is no imbalance
 			// Proceed to check if there is any imbalance in the ancestor node
