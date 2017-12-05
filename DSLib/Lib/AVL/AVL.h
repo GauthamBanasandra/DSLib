@@ -40,7 +40,7 @@ namespace ds
 			void left_rotate(const std::shared_ptr<node<T>> &n);
 
 			// Finds imbalance from the node n, imbalance info is provided as an out parameter
-			bool find_imbalance(const std::shared_ptr<node<T>> &n, imbalance_info<T> *out_info);
+			bool find_imbalance(const std::shared_ptr<node<T>> &n, long long height_diff, imbalance_info<T> *out_info);
 
 			// Promotes child to be parent's peer
 			// Parent will transfer its ancestral relationship to child
@@ -67,24 +67,43 @@ namespace ds
 			{
 				auto new_node = std::make_shared<node<T>>(key, node_type);
 				new_node->ancestor = ancestor;
+				switch (node_type) {
+				case node_type::k_left_child:
+					ancestor->left_child = new_node;
+					break;
+				case node_type::k_right_child:
+					ancestor->right_child = new_node;
+					break;
+				case node_type::k_root:
+					assert(false);
+					break;
+				default:
+					assert(false);
+				}
+
 				return new_node;
 			}
 
 			if (key <= n->data)
 			{
-				n->left_child = insert(key, n->left_child, n, node_type::k_left_child);
+				insert(key, n->left_child, n, node_type::k_left_child);
 			}
 			else
 			{
-				n->right_child = insert(key, n->right_child, n, node_type::k_right_child);
+				insert(key, n->right_child, n, node_type::k_right_child);
 			}
 
 			n->height = std::max(get_height(n->left_child), get_height(n->right_child)) + 1;
 
-			// If there is any imbalance, then restructure the tree
-			imbalance_info<T> info;
-			if (find_imbalance(n, &info))
+			const auto &height_diff = get_height(n->left_child) - get_height(n->right_child);
+
+			// If the height difference between left and right children is 0, 1 or -1, there is no imbalance
+			// Proceed to check if there is any imbalance in the ancestor node
+			if (!(height_diff == 0 || height_diff == 1 || height_diff == -1))
 			{
+				// If there is any imbalance, then restructure the tree
+				imbalance_info<T> info;
+				find_imbalance(n, height_diff, &info);
 				n = restructure(&info);
 			}
 
@@ -168,22 +187,8 @@ namespace ds
 		}
 
 		template <class T>
-		bool avl<T>::find_imbalance(const std::shared_ptr<node<T>>& n, imbalance_info<T>* out_info)
-		{
-			if (n == nullptr)
-			{
-				return false;
-			}
-
-			const auto &height_diff = get_height(n->left_child) - get_height(n->right_child);
-
-			// If the height difference between left and right children is 0, 1 or -1, there is no imbalance
-			// Proceed to check if there is any imbalance in the ancestor node
-			if (height_diff == 0 || height_diff == 1 || height_diff == -1)
-			{
-				return false;
-			}
-
+		bool avl<T>::find_imbalance(const std::shared_ptr<node<T>>& n, const long long height_diff, imbalance_info<T>* out_info)
+		{		
 			// Otherwise, there is some imbalance
 			// The node with imbalance is denoted as z
 			out_info->z = n;
