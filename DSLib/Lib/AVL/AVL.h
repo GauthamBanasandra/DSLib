@@ -11,11 +11,11 @@ namespace ds
 		struct imbalance_info
 		{
 			// Node z is where the imbalance starts while traversing upwards from the inserted node
-			node<T> * z;
+			node<T> *z;
 			// Node y is the child of z with a greater height
-			node<T> * y;
+			node<T> *y;
 			// Node x is the child of y with a greater height
-			node<T> * x;
+			node<T> *x;
 			// Denotes the configuration of z, y and x nodes
 			imbalance_config config;
 		};
@@ -24,31 +24,31 @@ namespace ds
 		class avl : public bst<T>
 		{
 		public:
-			node<T> * insert(T& key) override;
+			node<T> *insert(T& key) override;
 
 		private:
-			node<T> * insert(T &key, node<T> *n, node<T> * ancestor, node_type node_type);
+			node<T> *insert(T &key, node<T> *n, node<T> *ancestor, node_type node_type);
 
 			// Performs trinode restructuring to maintain the height of the binary tree log(h)
 			// Returns the root of the restructured sub-tree
-			node<T> * restructure(imbalance_info<T>* info);
+			node<T> *restructure(imbalance_info<T>* info);
 
 			// Right rotation is performed for LL case - x is left child of y and y is left child of z
-			void right_rotate(node<T>* n);
+			void right_rotate(node<T> *n);
 
 			// Left rotation is performed for RR case - x is right child of y and y is right child of z
-			void left_rotate(node<T>* n);
+			void left_rotate(node<T> *n);
 
 			// Finds imbalance from the node n, imbalance info is provided as an out parameter
-			bool find_imbalance(node<T>* n, const long long height_diff, imbalance_info<T>* out_info);
+			bool find_imbalance(node<T> *n, const long long height_diff, imbalance_info<T>* out_info);
 
 			// Promotes child to be parent's peer
 			// Parent will transfer its ancestral relationship to child
-			void promote_child(node<T>* parent, node<T>* child);
+			void promote_child(node<T> *parent, node<T> *child);
 		};
 
 		template <class T>
-		node<T> * avl<T>::insert(T& key)
+		node<T> *avl<T>::insert(T& key)
 		{
 			if (this->root == nullptr)
 			{
@@ -60,7 +60,7 @@ namespace ds
 		}
 
 		template <class T>
-		node<T> * avl<T>::insert(T& key, node<T> * n, node<T> * ancestor, node_type node_type)
+		node<T> *avl<T>::insert(T& key, node<T> *n, node<T> *ancestor, node_type node_type)
 		{
 			// Insert the key just like a BST
 			if (n == nullptr)
@@ -111,7 +111,7 @@ namespace ds
 		}
 
 		template <class T>
-		node<T> * avl<T>::restructure(imbalance_info<T>* info)
+		node<T> *avl<T>::restructure(imbalance_info<T>* info)
 		{
 			if (info->config == imbalance_config::k_ll)
 			{
@@ -141,7 +141,7 @@ namespace ds
 
 		// Right rotate on node n
 		template <class T>
-		void avl<T>::right_rotate(node<T> * n)
+		void avl<T>::right_rotate(node<T> *n)
 		{
 			auto child = n->left_child;
 			// n is adopting "child's" right child as its left child
@@ -166,7 +166,7 @@ namespace ds
 
 		// This is a mirror of right_rotate i.e. all 'left' will become 'right' irrespective of the context/type
 		template <class T>
-		void avl<T>::left_rotate(node<T> * n)
+		void avl<T>::left_rotate(node<T> *n)
 		{
 			auto child = n->right_child;
 			n->right_child = child->left_child;
@@ -187,7 +187,7 @@ namespace ds
 		}
 
 		template <class T>
-		bool avl<T>::find_imbalance(node<T> * n, const long long height_diff, imbalance_info<T>* out_info)
+		bool avl<T>::find_imbalance(node<T> *n, const long long height_diff, imbalance_info<T>* out_info)
 		{
 			// Otherwise, there is some imbalance
 			// The node with imbalance is denoted as z
@@ -230,7 +230,7 @@ namespace ds
 		}
 
 		template <class T>
-		void avl<T>::promote_child( node<T> * parent, node<T> * child)
+		void avl<T>::promote_child(node<T> *parent, node<T> *child)
 		{
 			// parent's ancestor will adopt 'child'
 			child->ancestor = parent->ancestor;
