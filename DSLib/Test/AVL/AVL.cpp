@@ -362,7 +362,7 @@ namespace AVL
 	{
 		TEST_METHOD(benchmark_insertion)
 		{
-			const auto data_size = 10000000;
+			const auto data_size = 1000000;
 			const auto seed = static_cast<unsigned>(time(nullptr));
 
 			// Log the seed

@@ -10,6 +10,14 @@ namespace ds
 	namespace bin_tree
 	{
 		template<class T>
+		struct node_info
+		{
+			T *key;
+			node<T> *ancestor;
+			node_type type;
+		};
+
+		template<class T>
 		class binary_tree
 		{
 			using big_int = unsigned long long;

@@ -19,7 +19,7 @@ namespace ds
 			// Denotes the configuration of z, y and x nodes
 			imbalance_config config;
 		};
-
+		
 		template<class T>
 		class avl : public bst<T>
 		{
@@ -27,7 +27,7 @@ namespace ds
 			node<T> *insert(T& key) override;
 
 		private:
-			node<T> *insert(T &key, node<T> *n, node<T> *ancestor, node_type node_type);
+			node<T> *insert(node<T> *n, node_info<T> &node_info);
 
 			// Performs trinode restructuring to maintain the height of the binary tree log(h)
 			// Returns the root of the restructured sub-tree
@@ -40,7 +40,7 @@ namespace ds
 			void left_rotate(node<T> *n);
 
 			// Finds imbalance from the node n, imbalance info is provided as an out parameter
-			bool find_imbalance(node<T> *n, const long long height_diff, imbalance_info<T>* out_info);
+			void find_imbalance(node<T> *n, const long long height_diff, imbalance_info<T>* out_info);
 
 			// Promotes child to be parent's peer
 			// Parent will transfer its ancestral relationship to child
@@ -56,27 +56,32 @@ namespace ds
 				return this->root;
 			}
 
-			return insert(key, this->root, this->root, node_type::k_root);
+			node_info<T> node_info;
+			node_info.key = &key;
+			return insert(this->root, node_info);
 		}
 
 		template <class T>
-		node<T> *avl<T>::insert(T& key, node<T> *n, node<T> *ancestor, node_type node_type)
+		node<T> *avl<T>::insert(node<T> *n, node_info<T> &node_info)
 		{
 			// Insert the key just like a BST
 			if (n == nullptr)
 			{
-				auto new_node = new node<T>(key, node_type);
-				new_node->ancestor = ancestor;
-				switch (node_type) {
+				auto new_node = new node<T>(*node_info.key, node_info.type);
+				new_node->ancestor = node_info.ancestor;
+				switch (node_info.type) {
 				case node_type::k_left_child:
-					ancestor->left_child = new_node;
+					node_info.ancestor->left_child = new_node;
 					break;
+
 				case node_type::k_right_child:
-					ancestor->right_child = new_node;
+					node_info.ancestor->right_child = new_node;
 					break;
+
 				case node_type::k_root:
 					assert(false);
 					break;
+
 				default:
 					assert(false);
 				}
@@ -84,18 +89,21 @@ namespace ds
 				return new_node;
 			}
 
-			if (key <= n->data)
+			node_info.ancestor = n;
+			if (*node_info.key <= n->data)
 			{
-				insert(key, n->left_child, n, node_type::k_left_child);
+				node_info.type = node_type::k_left_child;
+				insert(n->left_child, node_info);
 			}
 			else
 			{
-				insert(key, n->right_child, n, node_type::k_right_child);
+				node_info.type = node_type::k_right_child;
+				insert(n->right_child, node_info);
 			}
 
 			n->height = std::max(get_height(n->left_child), get_height(n->right_child)) + 1;
 
-			const auto &height_diff = get_height(n->left_child) - get_height(n->right_child);
+			const auto height_diff = get_height(n->left_child) - get_height(n->right_child);
 
 			// If the height difference between left and right children is 0, 1 or -1, there is no imbalance
 			// Proceed to check if there is any imbalance in the ancestor node
@@ -187,7 +195,7 @@ namespace ds
 		}
 
 		template <class T>
-		bool avl<T>::find_imbalance(node<T> *n, const long long height_diff, imbalance_info<T>* out_info)
+		void avl<T>::find_imbalance(node<T> *n, const long long height_diff, imbalance_info<T>* out_info)
 		{
 			// Otherwise, there is some imbalance
 			// The node with imbalance is denoted as z
@@ -225,8 +233,6 @@ namespace ds
 					out_info->config = imbalance_config::k_rr;
 				}
 			}
-
-			return true;
 		}
 
 		template <class T>
