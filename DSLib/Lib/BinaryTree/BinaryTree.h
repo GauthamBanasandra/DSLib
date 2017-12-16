@@ -143,7 +143,8 @@ namespace ds
 				break;
 
 			default:
-				assert(false, L"Not handled for this node_type");
+				// Not handled for this node_type
+				assert(false);
 			}
 
 			other->ancestor = ancestor;

@@ -10,10 +10,6 @@ namespace ds
 		class bst :public binary_tree<T>
 		{
 		public:
-			// TODO : This is redundant
-			bst() :binary_tree<T>() {}
-			~bst() {}
-
 			bool search(const T &key) const;
 			node<T> *search(const T &key, node<T> *n) const;
 

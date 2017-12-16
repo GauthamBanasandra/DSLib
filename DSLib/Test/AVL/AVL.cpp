@@ -3,6 +3,7 @@
 #include <cassert>
 #include <vector>
 #include "AVL.h"
+#include <set>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -361,7 +362,7 @@ namespace AVL
 	{
 		TEST_METHOD(benchmark_insertion)
 		{
-			const auto data_size = 100000;
+			const auto data_size = 10000000;
 			const auto seed = static_cast<unsigned>(time(nullptr));
 
 			// Log the seed
@@ -370,10 +371,12 @@ namespace AVL
 
 			srand(seed);
 			ds::bin_tree::avl<int> avl;
+			std::set<int> avl_set;
 			for (auto i = 0; i < data_size; ++i)
 			{
 				auto x = rand();
 				avl.insert(x);
+				//avl_set.insert(x);
 			}
 		}
 
