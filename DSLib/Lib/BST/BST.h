@@ -15,23 +15,23 @@ namespace ds
 			~bst() {}
 
 			bool search(const T &key) const;
-			node<T> * search(const T &key, node<T> * n) const;
+			node<T> *search(const T &key, node<T> *n) const;
 
-			node<T> * successor(const T &key);
-			node<T> * predecessor(const T &key);
-			node<T> * find_min();
-			node<T> * find_max();
+			node<T> *successor(const T &key);
+			node<T> *predecessor(const T &key);
+			node<T> *find_min();
+			node<T> *find_max();
 
-			node<T> * insert(T& key) override;
+			node<T> *insert(T& key) override;
 			// TODO : Update node's height upon node removal in a BST
 			bool remove(T key) override;
 
 		private:
-			node<T> * successor_up(node<T> * n);
-			node<T> * leftmost_child(node<T> * n);
-			node<T> * predecessor_up(node<T> * n);
-			node<T> * rightmost_child(node<T> * n);
-			virtual node<T> * insert(T &key, node<T> * n, node_type node_type);
+			node<T> *successor_up(node<T> *n);
+			node<T> *leftmost_child(node<T> *n);
+			node<T> *predecessor_up(node<T> *n);
+			node<T> *rightmost_child(node<T> *n);
+			virtual node<T> *insert(T &key, node<T> *n, node_type node_type);
 		};
 
 		template <class T>
@@ -46,7 +46,7 @@ namespace ds
 		}
 
 		template <class T>
-		node<T> * bst<T>::search(const T& key, node<T> * n) const
+		node<T> *bst<T>::search(const T& key, node<T> *n) const
 		{
 			if (n == nullptr)
 			{
@@ -67,7 +67,7 @@ namespace ds
 		}
 
 		template <class T>
-		node<T> *  bst<T>::successor(const T& key)
+		node<T> *bst<T>::successor(const T& key)
 		{
 			auto n = search(key, this->root);
 			if (n == nullptr)
@@ -96,7 +96,7 @@ namespace ds
 		}
 
 		template <class T>
-		node<T> * bst<T>::predecessor(const T& key)
+		node<T> *bst<T>::predecessor(const T& key)
 		{
 			auto n = search(key, this->root);
 			if (n == nullptr)
@@ -126,7 +126,7 @@ namespace ds
 
 		// The least element in a bst is the leftmost element of the tree
 		template <class T>
-		node<T> * bst<T>::find_min()
+		node<T> *bst<T>::find_min()
 		{
 			if (this->root == nullptr)
 			{
@@ -138,7 +138,7 @@ namespace ds
 
 		// The greatest element in a bst is the rightmost element of the tree
 		template <class T>
-		node<T> * bst<T>::find_max()
+		node<T> *bst<T>::find_max()
 		{
 			if (this->root == nullptr)
 			{
@@ -149,7 +149,7 @@ namespace ds
 		}
 
 		template <class T>
-		node<T> * bst<T>::insert(T& key)
+		node<T> *bst<T>::insert(T& key)
 		{
 			const auto n = insert(key, this->root, node_type::k_root);
 			if (this->root == nullptr)
@@ -183,13 +183,13 @@ namespace ds
 			{
 				// Node to remove has only a left child,
 				// replace the node to be removed with its left child 
-				n->replace(this->root, n->left_child);
+				replace(n, n->left_child);
 			}
 			else if (n->left_child == nullptr && n->right_child != nullptr)
 			{
 				// Node to remove has only a right child,
 				// replace the node to be removed with its right child 
-				n->replace(this->root, n->right_child);
+				replace(n, n->right_child);
 			}
 			else
 			{
@@ -235,7 +235,7 @@ namespace ds
 						successor->right_child = n->right_child;
 					}
 
-					n->replace(this->root, successor);
+					replace(n, successor);
 				}
 				else if (successor->node_type == node_type::k_right_child)
 				{
@@ -250,7 +250,7 @@ namespace ds
 						successor->left_child = n->left_child;
 					}
 
-					n->replace(this->root, successor);
+					replace(n, successor);
 				}
 				else
 				{
@@ -265,7 +265,7 @@ namespace ds
 					// with its right child
 					successor->copy_data_to(n);
 					successor->right_child = nullptr;
-					successor->replace(this->root, right_child);
+					replace(successor, right_child);
 				}
 			}
 
@@ -273,7 +273,7 @@ namespace ds
 		}
 
 		template <class T>
-		node<T> * bst<T>::successor_up(node<T> * n)
+		node<T> *bst<T>::successor_up(node<T> *n)
 		{
 			auto &ancestor = n->ancestor;
 			if (ancestor == nullptr)
@@ -290,7 +290,7 @@ namespace ds
 		}
 
 		template <class T>
-		node<T> * bst<T>::leftmost_child(node<T> * n)
+		node<T> *bst<T>::leftmost_child(node<T> *n)
 		{
 			if (n->left_child != nullptr)
 			{
@@ -301,7 +301,7 @@ namespace ds
 		}
 
 		template <class T>
-		node<T> * bst<T>::predecessor_up(node<T> * n)
+		node<T> *bst<T>::predecessor_up(node<T> *n)
 		{
 			auto &ancestor = n->ancestor;
 			if (ancestor == nullptr)
@@ -318,7 +318,7 @@ namespace ds
 		}
 
 		template <class T>
-		node<T> * bst<T>::rightmost_child(node<T> * n)
+		node<T> *bst<T>::rightmost_child(node<T> *n)
 		{
 			if (n->right_child != nullptr)
 			{
@@ -329,7 +329,7 @@ namespace ds
 		}
 
 		template <class T>
-		node<T> * bst<T>::insert(T& key, node<T> * n, node_type node_type)
+		node<T> *bst<T>::insert(T& key, node<T> *n, node_type node_type)
 		{
 			if (n == nullptr)
 			{

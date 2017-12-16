@@ -18,7 +18,6 @@ namespace ds
 			}
 
 			bool is_leaf() { return left_child == nullptr && right_child == nullptr; }
-			void replace(node<T> *&root, node<T> *other);
 			void copy_data_to(node<T> * other) { other->data = this->data; }
 			static void remove(node<T> *other);
 
@@ -29,34 +28,6 @@ namespace ds
 			node<T> *left_child;
 			node<T> *right_child;
 		};
-
-		// Perfoms replacement of the node with other
-		// This doesn't handle childrens' links which is the responsibility of the caller
-		// TODO : Move this method to bst class to avoid passing root as parameter
-		template <typename T>
-		void node<T>::replace(node<T> * &root, node<T> * other)
-		{
-			auto &ancestor = this->ancestor;
-			switch (this->node_type)
-			{
-			case node_type::k_right_child:
-				ancestor->right_child = other;
-				break;
-
-			case node_type::k_left_child:
-				ancestor->left_child = other;
-				break;
-
-			case node_type::k_root:
-				root = other;
-				break;
-			}
-
-			other->ancestor = ancestor;
-			other->node_type = this->node_type;
-
-			delete this;
-		}
 
 		template <typename T>
 		void node<T>::remove(node<T> * n)

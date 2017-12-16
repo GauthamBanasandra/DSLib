@@ -38,6 +38,7 @@ namespace ds
 		protected:
 			// A utility function to get the height of the node
 			static long long get_height(node<T> *n) { return n == nullptr ? 0 : n->height; }
+			void replace(node<T> * current, node<T> * other);
 
 		public:
 			node<T> * root;
@@ -119,6 +120,36 @@ namespace ds
 			auto right_height = binary_tree<T>::height(n->right_child);
 
 			return std::max(left_height, right_height) + 1;
+		}
+
+		// Replaces 'current' node with 'other'
+		// This doesn't handle childrens' links which is the responsibility of the caller
+		template <typename T>
+		void binary_tree<T>::replace(node<T> * current, node<T> * other)
+		{
+			auto ancestor = current->ancestor;
+			switch (current->node_type)
+			{
+			case node_type::k_right_child:
+				ancestor->right_child = other;
+				break;
+
+			case node_type::k_left_child:
+				ancestor->left_child = other;
+				break;
+
+			case node_type::k_root:
+				root = other;
+				break;
+
+			default: 
+				assert(false, L"Not handled for this node_type");
+			}
+
+			other->ancestor = ancestor;
+			other->node_type = current->node_type;
+
+			delete current;
 		}
 	}
 }
