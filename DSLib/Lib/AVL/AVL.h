@@ -31,7 +31,7 @@ namespace ds
 
 			// Performs trinode restructuring to maintain the height of the binary tree log(h)
 			// Returns the root of the restructured sub-tree
-			node<T> *restructure(imbalance_info<T>* info);
+			node<T> *restructure(const imbalance_info<T> &info);
 
 			// Right rotation is performed for LL case - x is left child of y and y is left child of z
 			void right_rotate(node<T> *n);
@@ -40,7 +40,7 @@ namespace ds
 			void left_rotate(node<T> *n);
 
 			// Finds imbalance from the node n, imbalance info is provided as an out parameter
-			void find_imbalance(node<T> *n, const long long height_diff, imbalance_info<T>* out_info);
+			imbalance_info<T> find_imbalance(node<T> *n, const long long height_diff);
 
 			// Promotes child to be parent's peer
 			// Parent will transfer its ancestral relationship to child
@@ -110,41 +110,40 @@ namespace ds
 			if (!(height_diff == 0 || height_diff == 1 || height_diff == -1))
 			{
 				// If there is any imbalance, then restructure the tree
-				imbalance_info<T> info;
-				find_imbalance(n, height_diff, &info);
-				n = restructure(&info);
+				const auto info = find_imbalance(n, height_diff);
+				n = restructure(info);
 			}
 
 			return n;
 		}
 
 		template <class T>
-		node<T> *avl<T>::restructure(imbalance_info<T>* info)
+		node<T> *avl<T>::restructure(const imbalance_info<T> &info)
 		{
-			if (info->config == imbalance_config::k_ll)
+			if (info.config == imbalance_config::k_ll)
 			{
-				right_rotate(info->z);
-				return info->y;
+				right_rotate(info.z);
+				return info.y;
 			}
 
-			if (info->config == imbalance_config::k_lr)
+			if (info.config == imbalance_config::k_lr)
 			{
-				left_rotate(info->y);
-				right_rotate(info->z);
-				return info->x;
+				left_rotate(info.y);
+				right_rotate(info.z);
+				return info.x;
 			}
 
-			if (info->config == imbalance_config::k_rr)
+			if (info.config == imbalance_config::k_rr)
 			{
-				left_rotate(info->z);
-				return info->y;
+				left_rotate(info.z);
+				return info.y;
 			}
 
 			// Only 4 rotations are possible LL, LR, RR and RL
-			assert(info->config == imbalance_config::k_rl);
-			right_rotate(info->y);
-			left_rotate(info->z);
-			return info->x;
+			assert(info.config == imbalance_config::k_rl);
+			right_rotate(info.y);
+			left_rotate(info.z);
+			return info.x;
 		}
 
 		// Right rotate on node n
@@ -195,44 +194,47 @@ namespace ds
 		}
 
 		template <class T>
-		void avl<T>::find_imbalance(node<T> *n, const long long height_diff, imbalance_info<T>* out_info)
+		imbalance_info<T> avl<T>::find_imbalance(node<T> *n, const long long height_diff)
 		{
+			imbalance_info<T> info;
 			// Otherwise, there is some imbalance
 			// The node with imbalance is denoted as z
-			out_info->z = n;
+			info.z = n;
 			if (height_diff > 0)
 			{
 				// Since we subtract right child's height from left child's height, 
 				// if the difference is positive, then left child has a greater height compared to right child
 				// Child of z with the greater height is denoted as y
-				out_info->y = n->left_child;
+				info.y = n->left_child;
 				// TODO : Check if node's height member can be used here
-				if (get_height(out_info->y->left_child) >= get_height(out_info->y->right_child))
+				if (get_height(info.y->left_child) >= get_height(info.y->right_child))
 				{
 					// x is child of y which has the longer path
-					out_info->x = out_info->y->left_child;
-					out_info->config = imbalance_config::k_ll;
+					info.x = info.y->left_child;
+					info.config = imbalance_config::k_ll;
 				}
 				else
 				{
-					out_info->x = out_info->y->right_child;
-					out_info->config = imbalance_config::k_lr;
+					info.x = info.y->right_child;
+					info.config = imbalance_config::k_lr;
 				}
 			}
 			else
 			{
-				out_info->y = n->right_child;
-				if (get_height(out_info->y->left_child) >= get_height(out_info->y->right_child))
+				info.y = n->right_child;
+				if (get_height(info.y->left_child) >= get_height(info.y->right_child))
 				{
-					out_info->x = out_info->y->left_child;
-					out_info->config = imbalance_config::k_rl;
+					info.x = info.y->left_child;
+					info.config = imbalance_config::k_rl;
 				}
 				else
 				{
-					out_info->x = out_info->y->right_child;
-					out_info->config = imbalance_config::k_rr;
+					info.x = info.y->right_child;
+					info.config = imbalance_config::k_rr;
 				}
 			}
+
+			return info;
 		}
 
 		template <class T>
