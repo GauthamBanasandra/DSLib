@@ -15,23 +15,23 @@ namespace ds
 			~bst() {}
 
 			bool search(const T &key) const;
-			std::shared_ptr<node<T>> search(const T &key, std::shared_ptr<node<T>> n) const;
+			node<T> * search(const T &key, node<T> * n) const;
 
-			std::shared_ptr<node<T>> successor(const T &key);
-			std::shared_ptr<node<T>> predecessor(const T &key);
-			std::shared_ptr<node<T>> find_min();
-			std::shared_ptr<node<T>> find_max();
+			node<T> * successor(const T &key);
+			node<T> * predecessor(const T &key);
+			node<T> * find_min();
+			node<T> * find_max();
 
-			std::shared_ptr<node<T>> insert(T& key) override;
+			node<T> * insert(T& key) override;
 			// TODO : Update node's height upon node removal in a BST
 			bool remove(T key) override;
 
-		private: // TODO : shared_ptr could be move rather than copied
-			std::shared_ptr<node<T>> successor_up(std::shared_ptr<node<T>> n);
-			std::shared_ptr<node<T>> leftmost_child(std::shared_ptr<node<T>> n);
-			std::shared_ptr<node<T>> predecessor_up(std::shared_ptr<node<T>> n);
-			std::shared_ptr<node<T>> rightmost_child(std::shared_ptr<node<T>> n);
-			virtual std::shared_ptr<node<T>> insert(T &key, std::shared_ptr<node<T>> &n, node_type node_type);
+		private:
+			node<T> * successor_up(node<T> * n);
+			node<T> * leftmost_child(node<T> * n);
+			node<T> * predecessor_up(node<T> * n);
+			node<T> * rightmost_child(node<T> * n);
+			virtual node<T> * insert(T &key, node<T> * n, node_type node_type);
 		};
 
 		template <class T>
@@ -46,7 +46,7 @@ namespace ds
 		}
 
 		template <class T>
-		std::shared_ptr<node<T>> bst<T>::search(const T& key, std::shared_ptr<node<T>> n) const
+		node<T> * bst<T>::search(const T& key, node<T> * n) const
 		{
 			if (n == nullptr)
 			{
@@ -67,7 +67,7 @@ namespace ds
 		}
 
 		template <class T>
-		std::shared_ptr<node<T>>  bst<T>::successor(const T& key)
+		node<T> *  bst<T>::successor(const T& key)
 		{
 			auto n = search(key, this->root);
 			if (n == nullptr)
@@ -86,7 +86,7 @@ namespace ds
 			// If there's no right child but the node has an ancestor, 
 			// then traverse up till the node is a left child of its parent,
 			// then the successor is the ancestor of the current node
-			if (n->ancestor.lock() != nullptr)
+			if (n->ancestor != nullptr)
 			{
 				return successor_up(n);
 			}
@@ -96,7 +96,7 @@ namespace ds
 		}
 
 		template <class T>
-		std::shared_ptr<node<T>> bst<T>::predecessor(const T& key)
+		node<T> * bst<T>::predecessor(const T& key)
 		{
 			auto n = search(key, this->root);
 			if (n == nullptr)
@@ -115,7 +115,7 @@ namespace ds
 			// If there's no left child but the node has an ancestor, 
 			// then traverse up till the node is a right child of its parent,
 			// then the predecessor is the ancestor of the current node
-			if (n->ancestor.lock() != nullptr)
+			if (n->ancestor != nullptr)
 			{
 				return predecessor_up(n);
 			}
@@ -126,7 +126,7 @@ namespace ds
 
 		// The least element in a bst is the leftmost element of the tree
 		template <class T>
-		std::shared_ptr<node<T>> bst<T>::find_min()
+		node<T> * bst<T>::find_min()
 		{
 			if (this->root == nullptr)
 			{
@@ -138,7 +138,7 @@ namespace ds
 
 		// The greatest element in a bst is the rightmost element of the tree
 		template <class T>
-		std::shared_ptr<node<T>> bst<T>::find_max()
+		node<T> * bst<T>::find_max()
 		{
 			if (this->root == nullptr)
 			{
@@ -149,7 +149,7 @@ namespace ds
 		}
 
 		template <class T>
-		std::shared_ptr<node<T>> bst<T>::insert(T& key)
+		node<T> * bst<T>::insert(T& key)
 		{
 			const auto n = insert(key, this->root, node_type::k_root);
 			if (this->root == nullptr)
@@ -198,7 +198,7 @@ namespace ds
 				auto successor = leftmost_child(n->right_child);
 
 				// Successor renounces its lineage
-				auto successor_ancestor = successor->ancestor.lock();
+				auto successor_ancestor = successor->ancestor;
 				switch (successor->node_type)
 				{
 				case node_type::k_left_child:
@@ -273,9 +273,9 @@ namespace ds
 		}
 
 		template <class T>
-		std::shared_ptr<node<T>> bst<T>::successor_up(std::shared_ptr<node<T>> n)
+		node<T> * bst<T>::successor_up(node<T> * n)
 		{
-			auto &ancestor = n->ancestor.lock();
+			auto &ancestor = n->ancestor;
 			if (ancestor == nullptr)
 			{
 				return nullptr;
@@ -290,7 +290,7 @@ namespace ds
 		}
 
 		template <class T>
-		std::shared_ptr<node<T>> bst<T>::leftmost_child(std::shared_ptr<node<T>> n)
+		node<T> * bst<T>::leftmost_child(node<T> * n)
 		{
 			if (n->left_child != nullptr)
 			{
@@ -301,9 +301,9 @@ namespace ds
 		}
 
 		template <class T>
-		std::shared_ptr<node<T>> bst<T>::predecessor_up(std::shared_ptr<node<T>> n)
+		node<T> * bst<T>::predecessor_up(node<T> * n)
 		{
-			auto &ancestor = n->ancestor.lock();
+			auto &ancestor = n->ancestor;
 			if (ancestor == nullptr)
 			{
 				return nullptr;
@@ -318,7 +318,7 @@ namespace ds
 		}
 
 		template <class T>
-		std::shared_ptr<node<T>> bst<T>::rightmost_child(std::shared_ptr<node<T>> n)
+		node<T> * bst<T>::rightmost_child(node<T> * n)
 		{
 			if (n->right_child != nullptr)
 			{
@@ -329,11 +329,11 @@ namespace ds
 		}
 
 		template <class T>
-		std::shared_ptr<node<T>> bst<T>::insert(T& key, std::shared_ptr<node<T>>& n, node_type node_type)
+		node<T> * bst<T>::insert(T& key, node<T> * n, node_type node_type)
 		{
 			if (n == nullptr)
 			{
-				return std::make_shared<node<T>>(key, node_type);
+				return new node<T>(key, node_type);
 			}
 
 			if (key <= n->data)

@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
 	std::vector<int> inorder;
 
 	// Inorder - specifying a custom visit action
-	bst.inorder([&inorder](std::shared_ptr<ds::bin_tree::node<int>> n) {inorder.push_back(n->data); });
+	bst.inorder([&inorder](ds::bin_tree::node<int> * n) {inorder.push_back(n->data); });
 	std::cout << "Inorder:" << std::endl;
 	for (const auto &item : inorder)
 	{

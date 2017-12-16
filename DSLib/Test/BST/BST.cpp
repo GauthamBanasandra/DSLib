@@ -10,9 +10,9 @@ namespace BST
 	template<class T>
 	void do_lineage_test(ds::bin_tree::bst<T> bst)
 	{
-		bst.inorder([](std::shared_ptr<ds::bin_tree::node<T>>n)
+		bst.inorder([](ds::bin_tree::node<T> *n)
 		{
-			const auto &ancestor = n->ancestor.lock();
+			const auto &ancestor = n->ancestor;
 			switch (n->node_type)
 			{
 			case ds::bin_tree::node_type::k_left_child:
@@ -34,13 +34,13 @@ namespace BST
 			const auto &left_child = n->left_child;
 			if (left_child != nullptr)
 			{
-				Assert::AreEqual(n->data, left_child->ancestor.lock()->data);
+				Assert::AreEqual(n->data, left_child->ancestor->data);
 			}
 
 			const auto &right_child = n->right_child;
 			if (right_child != nullptr)
 			{
-				Assert::AreEqual(n->data, right_child->ancestor.lock()->data);
+				Assert::AreEqual(n->data, right_child->ancestor->data);
 			}
 		});
 	}
@@ -51,7 +51,7 @@ namespace BST
 		bst.remove(key);
 
 		std::vector<T> inorder;
-		bst.inorder([&inorder](std::shared_ptr<ds::bin_tree::node<T>> n) {inorder.push_back(n->data); });
+		bst.inorder([&inorder](ds::bin_tree::node<T> * n) {inorder.push_back(n->data); });
 
 		std::vector<T> expected(data.begin(), data.end());
 		expected.erase(remove(expected.begin(), expected.end(), key), expected.end());
@@ -76,7 +76,7 @@ namespace BST
 
 		// Output
 		std::vector<T> output;
-		bst.inorder([&output](std::shared_ptr<ds::bin_tree::node<T>> n)
+		bst.inorder([&output](ds::bin_tree::node<T> * n)
 		{
 			output.push_back(n->data);
 		});
@@ -410,7 +410,7 @@ namespace BST
 				bst.insert(item);
 			}
 
-			bst.inorder([](std::shared_ptr<ds::bin_tree::node<int>> n)
+			bst.inorder([](ds::bin_tree::node<int> * n)
 			{
 				auto expected = ds::bin_tree::bst<int>::height(n);
 				auto actual = n->height;
