@@ -27,6 +27,7 @@ namespace ds
 			node<T> *leftmost_child(node<T> *n);
 			node<T> *predecessor_up(node<T> *n);
 			node<T> *rightmost_child(node<T> *n);
+			bool remove(T key, node<T> *n);
 			virtual node<T> *insert(T &key, node<T> *n, node_type node_type);
 		};
 
@@ -159,10 +160,29 @@ namespace ds
 		template <class T>
 		bool bst<T>::remove(T key)
 		{
-			auto n = search(key, this->root);
+			return remove(key, this->root);
+		}
+
+		template <class T>
+		bool bst<T>::remove(T key, node<T> *n)
+		{
 			if (n == nullptr)
 			{
 				return false;
+			}
+
+			if (key < n->data)
+			{
+				auto result = remove(key, n->left_child);
+				n->height = std::max(get_height(n->left_child), get_height(n->right_child)) + 1;
+				return result;
+			}
+
+			if (key > n->data)
+			{
+				auto result = remove(key, n->right_child);
+				n->height = std::max(get_height(n->left_child), get_height(n->right_child)) + 1;
+				return result;
 			}
 
 			if (n->is_leaf())
