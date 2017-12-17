@@ -39,11 +39,14 @@ namespace ds
 			case node_type::k_left_child:
 				ancestor->left_child = nullptr;
 				break;
+
 			case node_type::k_right_child:
 				ancestor->right_child = nullptr;
 				break;
+
 			case node_type::k_root:
 				break;
+
 			default:
 				// Unhandled node type
 				assert(false);

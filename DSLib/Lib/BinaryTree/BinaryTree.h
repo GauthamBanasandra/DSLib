@@ -23,7 +23,7 @@ namespace ds
 			using big_int = unsigned long long;
 
 		public:
-			explicit binary_tree() : root(nullptr), node_count(0) {}
+			explicit binary_tree() : root(nullptr) {}
 			virtual ~binary_tree() = default;
 
 			// Traversal methods with visit_action as a lambda
@@ -50,7 +50,6 @@ namespace ds
 
 		public:
 			node<T> *root;
-			big_int node_count;
 		};
 
 		template <class T>
