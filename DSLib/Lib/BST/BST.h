@@ -282,7 +282,13 @@ namespace ds
 					successor->copy_data_to(n);
 					successor->right_child = nullptr;
 					replace(successor, right_child);
+					// TODO : Need to write a method that updates heights of nodes from right_child to n and call it here.
 				}
+			}
+
+			if (n != nullptr)
+			{
+				n->height = std::max(get_height(n->left_child), get_height(n->right_child)) + 1;
 			}
 
 			return true;

@@ -19,7 +19,7 @@ namespace ds
 
 			bool is_leaf() { return left_child == nullptr && right_child == nullptr; }
 			void copy_data_to(node<T> *other) { other->data = this->data; }
-			static void remove(node<T> *other);
+			static void remove(node<T> *&other);
 
 			T data;
 			long long height;
@@ -30,7 +30,7 @@ namespace ds
 		};
 
 		template <typename T>
-		void node<T>::remove(node<T> *n)
+		void node<T>::remove(node<T> *&n)
 		{
 			n->left_child = n->right_child = nullptr;
 			auto &ancestor = n->ancestor;
@@ -53,6 +53,7 @@ namespace ds
 			}
 
 			delete n;
+			n = nullptr;
 		}
 	}
 }

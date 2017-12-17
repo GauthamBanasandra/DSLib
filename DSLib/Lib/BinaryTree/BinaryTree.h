@@ -46,7 +46,7 @@ namespace ds
 		protected:
 			// A utility function to get the height of the node
 			static long long get_height(node<T> *n) { return n == nullptr ? 0 : n->height; }
-			void replace(node<T> *current, node<T> *other);
+			void replace(node<T> *&current, node<T> *other);
 
 		public:
 			node<T> *root;
@@ -132,7 +132,7 @@ namespace ds
 		// Replaces 'current' node with 'other'
 		// This doesn't handle childrens' links which is the responsibility of the caller
 		template <typename T>
-		void binary_tree<T>::replace(node<T> *current, node<T> *other)
+		void binary_tree<T>::replace(node<T> *&current, node<T> *other)
 		{
 			auto ancestor = current->ancestor;
 			switch (current->node_type)
@@ -158,6 +158,7 @@ namespace ds
 			other->node_type = current->node_type;
 
 			delete current;
+			current = other;
 		}
 	}
 }
