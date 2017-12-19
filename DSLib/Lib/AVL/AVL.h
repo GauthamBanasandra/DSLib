@@ -19,7 +19,7 @@ namespace ds
 			// Denotes the configuration of z, y and x nodes
 			imbalance_config config;
 		};
-		
+
 		template<class T>
 		class avl : public bst<T>
 		{
@@ -56,7 +56,7 @@ namespace ds
 				return this->root;
 			}
 
-			node_info<T> node_info;
+			node_info<T> node_info{};
 			node_info.key = &key;
 			return insert(this->root, node_info);
 		}

@@ -19,7 +19,7 @@ namespace ds
 
 			bool is_leaf() { return left_child == nullptr && right_child == nullptr; }
 			void copy_data_to(node<T> *other) { other->data = this->data; }
-			static void remove(node<T> *&other);
+			static void remove(node<T> *&n);
 
 			T data;
 			long long height;

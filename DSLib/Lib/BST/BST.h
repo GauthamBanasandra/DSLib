@@ -274,14 +274,10 @@ namespace ds
 					// Such a successor will not have a left child, if it has one, it'll be a leaf node
 					assert(successor->left_child == nullptr);
 
-					// Temporary pointer to successor's right child
-					auto right_child = successor->right_child;
-
 					// Copy the data from successor to the node to be removed and replace the successor
 					// with its right child
 					successor->copy_data_to(n);
-					successor->right_child = nullptr;
-					replace(successor, right_child);
+					replace(successor, successor->right_child);
 					// TODO : Need to write a method that updates heights of nodes from right_child to n and call it here.
 				}
 			}
