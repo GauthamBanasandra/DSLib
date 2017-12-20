@@ -4,16 +4,27 @@
 
 namespace ds
 {
+	template<typename T>
+	class node
+	{
+	public:
+		explicit node(T data) : data(data), height(1)
+		{
+		}
+
+		T data;
+		long long height;
+	};
+
 	namespace bin_tree
 	{
 		enum class node_type { k_left_child, k_right_child, k_root };
 
 		template<typename T>
-		class node
+		class node : public ds::node<T>
 		{
 		public:
-			virtual ~node() = default;
-			explicit node(T data, const node_type node_type) : data(data), height(1), node_type(node_type), ancestor(nullptr), left_child(nullptr), right_child(nullptr)
+			explicit node(T data, const node_type type) : ds::node<T>(data), node_type(type), ancestor(nullptr), left_child(nullptr), right_child(nullptr)
 			{
 			}
 
@@ -21,8 +32,6 @@ namespace ds
 			void copy_data_to(node<T> *other) { other->data = this->data; }
 			static void remove(node<T> *&n);
 
-			T data;
-			long long height;
 			node_type node_type;
 			node<T> *ancestor;
 			node<T> *left_child;

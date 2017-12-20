@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.27130.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tree", "Tree", "{6FE9DCA5-B3F2-4593-B71E-3B9BC3A59723}"
 EndProject
@@ -28,6 +28,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AVL", "Client\AVL\AVL.vcxproj", "{6B10DF22-DA6C-4FBD-8F7D-AA415AB5B1E2}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AVL", "Test\AVL\AVL.vcxproj", "{49612D9F-D969-44F9-815B-02BBD7D983E1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tree", "Lib\Tree\Tree.vcxproj", "{DEF1E286-5B8E-4D97-AE82-A8F7728BF6D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -109,6 +111,14 @@ Global
 		{49612D9F-D969-44F9-815B-02BBD7D983E1}.Release|x64.Build.0 = Release|x64
 		{49612D9F-D969-44F9-815B-02BBD7D983E1}.Release|x86.ActiveCfg = Release|Win32
 		{49612D9F-D969-44F9-815B-02BBD7D983E1}.Release|x86.Build.0 = Release|Win32
+		{DEF1E286-5B8E-4D97-AE82-A8F7728BF6D1}.Debug|x64.ActiveCfg = Debug|x64
+		{DEF1E286-5B8E-4D97-AE82-A8F7728BF6D1}.Debug|x64.Build.0 = Debug|x64
+		{DEF1E286-5B8E-4D97-AE82-A8F7728BF6D1}.Debug|x86.ActiveCfg = Debug|Win32
+		{DEF1E286-5B8E-4D97-AE82-A8F7728BF6D1}.Debug|x86.Build.0 = Debug|Win32
+		{DEF1E286-5B8E-4D97-AE82-A8F7728BF6D1}.Release|x64.ActiveCfg = Release|x64
+		{DEF1E286-5B8E-4D97-AE82-A8F7728BF6D1}.Release|x64.Build.0 = Release|x64
+		{DEF1E286-5B8E-4D97-AE82-A8F7728BF6D1}.Release|x86.ActiveCfg = Release|Win32
+		{DEF1E286-5B8E-4D97-AE82-A8F7728BF6D1}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -124,6 +134,7 @@ Global
 		{58C21340-0FA0-4575-B37E-A0090C620D9D} = {6FE9DCA5-B3F2-4593-B71E-3B9BC3A59723}
 		{6B10DF22-DA6C-4FBD-8F7D-AA415AB5B1E2} = {A97B1356-3EAC-40A4-B591-E557CA356147}
 		{49612D9F-D969-44F9-815B-02BBD7D983E1} = {2943D6FC-5010-421B-9250-B7CC6BB2E118}
+		{DEF1E286-5B8E-4D97-AE82-A8F7728BF6D1} = {6FE9DCA5-B3F2-4593-B71E-3B9BC3A59723}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {83EEE417-9039-4161-A830-DDDEECE454CD}
