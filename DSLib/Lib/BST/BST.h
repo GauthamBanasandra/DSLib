@@ -18,9 +18,9 @@ namespace ds
 			node<T> *find_min();
 			node<T> *find_max();
 
-			node<T> *insert(T& key) override;
+			virtual node<T> *insert(T& key);
 			// TODO : Update node's height upon node removal in a BST
-			bool remove(T key) override;
+			bool remove(T key);
 
 		private:
 			node<T> *successor_up(node<T> *n);

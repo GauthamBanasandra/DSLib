@@ -4,27 +4,15 @@
 
 namespace ds
 {
-	template<typename T>
-	class node
-	{
-	public:
-		explicit node(T data) : data(data), height(1)
-		{
-		}
-
-		T data;
-		long long height;
-	};
-
 	namespace bin_tree
 	{
 		enum class node_type { k_left_child, k_right_child, k_root };
 
 		template<typename T>
-		class node : public ds::node<T>
+		class node
 		{
 		public:
-			explicit node(T data, const node_type type) : ds::node<T>(data), node_type(type), ancestor(nullptr), left_child(nullptr), right_child(nullptr)
+			explicit node(T data, const node_type type) : node_type(type), ancestor(nullptr), left_child(nullptr), right_child(nullptr), height(1), data(data)
 			{
 			}
 
@@ -36,6 +24,8 @@ namespace ds
 			node<T> *ancestor;
 			node<T> *left_child;
 			node<T> *right_child;
+			long long height;
+			T data;
 		};
 
 		template <typename T>

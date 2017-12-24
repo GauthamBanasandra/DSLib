@@ -82,7 +82,7 @@ namespace BST
 		});
 
 		Assert::AreEqual(expected.size(), output.size(), L"Sizes of expected and output vectors must be same");
-		for (auto i = 0; i < expected.size(); ++i)
+		for (std::size_t i = 0; i < expected.size(); ++i)
 		{
 			Assert::AreEqual(expected[i], output[i], L"Elements must be equal");
 		}
@@ -115,10 +115,10 @@ namespace BST
 				bst.insert(item);
 			}
 
-			for (auto i = 0; i < data.size() - 1; ++i)
+			for (std::size_t i = 0; i < data.size() - 1; ++i)
 			{
 				const auto successor_node = bst.successor(i);
-				Assert::AreEqual(i + 1, successor_node->data);
+				Assert::AreEqual(static_cast<int>(i + 1), successor_node->data);
 			}
 
 			if (bst.successor(data[data.size() - 1]) != nullptr)
@@ -292,7 +292,7 @@ namespace BST
 		TEST_METHOD(remove_sequence_test)
 		{
 			std::vector<int> data_queue{ 3, 1, 5, 0, 2, 4, 6 };
-			for (auto j = 0; j < data_queue.size(); ++j)
+			for (std::size_t j = 0; j < data_queue.size(); ++j)
 			{
 				std::vector<int> data(data_queue.begin() + j, data_queue.end());
 				ds::bin_tree::bst<int> bst;
@@ -309,7 +309,7 @@ namespace BST
 		TEST_METHOD(find_min_sequence_test)
 		{
 			std::vector<int> data_queue{ 3, 1, 5, 0, 2, 4, 6 };
-			for (auto j = 0; j < data_queue.size(); ++j)
+			for (std::size_t j = 0; j < data_queue.size(); ++j)
 			{
 				std::vector<int> data(data_queue.begin() + j, data_queue.end());
 				ds::bin_tree::bst<int> bst;
@@ -325,7 +325,7 @@ namespace BST
 		TEST_METHOD(find_max_sequence_test)
 		{
 			std::vector<int> data_queue{ 3, 1, 5, 0, 2, 4, 6 };
-			for (auto j = 0; j < data_queue.size(); ++j)
+			for (std::size_t j = 0; j < data_queue.size(); ++j)
 			{
 				std::vector<int> data(data_queue.begin() + j, data_queue.end());
 				ds::bin_tree::bst<int> bst;
@@ -341,7 +341,7 @@ namespace BST
 		TEST_METHOD(search_sequence_test)
 		{
 			std::vector<int> data_queue{ 3, 1, 5, 0, 2, 4, 6 };
-			for (auto j = 0; j < data_queue.size(); ++j)
+			for (std::size_t j = 0; j < data_queue.size(); ++j)
 			{
 				std::vector<int> data(data_queue.begin() + j, data_queue.end());
 				ds::bin_tree::bst<int> bst;
@@ -372,7 +372,7 @@ namespace BST
 			srand(seed);
 
 			std::vector<int> data;
-			for (auto i = 0; i < data_size; ++i)
+			for (std::size_t i = 0; i < data_size; ++i)
 			{
 				data.push_back(rand());
 			}
@@ -399,7 +399,7 @@ namespace BST
 			srand(seed);
 
 			std::vector<int> data;
-			for (auto i = 0; i < data_size; ++i)
+			for (std::size_t i = 0; i < data_size; ++i)
 			{
 				data.push_back(rand());
 			}

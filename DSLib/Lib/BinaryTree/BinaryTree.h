@@ -24,7 +24,6 @@ namespace ds
 
 		public:
 			explicit binary_tree() : root(nullptr) {}
-			virtual ~binary_tree() = default;
 
 			// Traversal methods with visit_action as a lambda
 			void preorder(std::function<void(node<T> *n)> visit_action = [](node<T> *n)->void {std::cout << n->data << '\n'; });
@@ -38,10 +37,6 @@ namespace ds
 			void inorder(node<T> *n, std::function<void(node<T> *)> &&visit_action);
 			long long height();
 			static long long height(const node<T> *n);
-
-			// Insert and remove methods are pure virtual (derived class must implement them)
-			virtual node<T> *insert(T& key) = 0;
-			virtual bool remove(T key) = 0;
 
 		protected:
 			// A utility function to get the height of the node
