@@ -12,9 +12,9 @@ namespace ds
 		using comparator = node<T>*(node<T>*, node<T>*);
 
 		template<class T>
-		node<T>* compare(node<T>* n1, node<T>* n2)
+		node<T>* compare(const std::vector<T>& data, node<T>* n1, node<T>* n2)
 		{
-			return n1->data <= n2->data ? n1 : n2;
+			return data[n1->data] <= data[n2->data] ? n1 : n2;
 		}
 
 		struct range
@@ -70,7 +70,9 @@ namespace ds
 			new_segment.upper_bound = segment.upper_bound;
 			const auto right_child = build_tree(node_type::k_right_child, new_segment);
 
-			auto new_node = new node<T>(compare(left_child, right_child)->data, type);
+			auto new_node = new node<T>(compare(data, left_child, right_child)->data, type);
+			new_node->left_child = left_child;
+			new_node->right_child = right_child;
 			left_child->ancestor = right_child->ancestor = new_node;
 			return new_node;
 		}
@@ -107,7 +109,7 @@ namespace ds
 				return left_child;
 			}
 
-			return compare(left_child, right_child);
+			return compare(data, left_child, right_child);
 		}
 	}
 }
