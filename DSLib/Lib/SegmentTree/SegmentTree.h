@@ -9,7 +9,10 @@ namespace ds
 	namespace bin_tree
 	{
 		template<class T>
-		node<T> compare(const node<T>* n1, const node<T>* n2)
+		using comparator = node<T>*(node<T>*, node<T>*);
+
+		template<class T>
+		node<T>* compare(node<T>* n1, node<T>* n2)
 		{
 			return n1->data <= n2->data ? n1 : n2;
 		}
@@ -23,6 +26,7 @@ namespace ds
 		template<class T>
 		class seg_tree : public binary_tree<T>
 		{
+
 		public:
 			explicit seg_tree(const std::vector<T>& data);
 
@@ -59,7 +63,7 @@ namespace ds
 
 			range new_segment;
 			new_segment.lower_bound = segment.lower_bound;
-			new_segment.upper_bound = segment.lower_bound + segment.upper_bound >> 1;
+			new_segment.upper_bound = (segment.lower_bound + segment.upper_bound) >> 1;
 			const auto left_child = build_tree(node_type::k_left_child, new_segment);
 
 			new_segment.lower_bound = new_segment.upper_bound + 1;
