@@ -3,7 +3,7 @@
 #include "SegmentTree.h"
 
 template<class T>
-ds::bin_tree::node<T>* compare(const std::vector<T>& data, ds::bin_tree::node<T>* n1, ds::bin_tree::node<T>* n2)
+ds::bin_tree::node<std::size_t>* compare(const std::vector<T>& data, ds::bin_tree::node<std::size_t>* n1, ds::bin_tree::node<std::size_t>* n2)
 {
 	return data[n1->data] <= data[n2->data] ? n1 : n2;
 }
