@@ -4,9 +4,9 @@
 #include "SegmentTree.h"
 
 template<class T>
-ds::bin_tree::node<std::size_t>* merge_nodes(void* container_cookie, ds::bin_tree::node<std::size_t>* n1, ds::bin_tree::node<std::size_t>* n2)
+ds::bin_tree::node<std::size_t>* merge_nodes(const void* container_cookie, ds::bin_tree::node<std::size_t>* n1, ds::bin_tree::node<std::size_t>* n2)
 {
-	auto container = static_cast<std::vector<T>*>(container_cookie);
+	auto container = (std::vector<T>*)container_cookie;
 	return (*container)[n1->data] <= (*container)[n2->data] ? n1 : n2;
 }
 

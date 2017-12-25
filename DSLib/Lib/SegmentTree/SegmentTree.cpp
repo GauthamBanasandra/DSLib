@@ -4,7 +4,7 @@ namespace ds
 {
 	namespace bin_tree
 	{
-		seg_tree::seg_tree(void* container_cookie, const std::size_t size, node<std::size_t>* (*merge_nodes)(void*, node<std::size_t>*, node<std::size_t>*)) : container_cookie(container_cookie), merge_nodes(merge_nodes), size(size)
+		seg_tree::seg_tree(const void* container_cookie, const std::size_t size, node<std::size_t>* (*merge_nodes)(const void*, node<std::size_t>*, node<std::size_t>*)) : container_cookie(container_cookie), merge_nodes(merge_nodes), size(size)
 		{
 			const range segment{ 0, size - 1 };
 			this->root = build_tree(node_type::k_root, segment);

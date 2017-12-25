@@ -15,13 +15,13 @@ namespace ds
 		class seg_tree : public binary_tree<std::size_t>
 		{
 		public:
-			explicit seg_tree(void* container_cookie, std::size_t size, node<std::size_t>*(*merge_nodes)(void*, node<std::size_t>*, node<std::size_t>*));
+			explicit seg_tree(const void* container_cookie, std::size_t size, node<std::size_t>*(*merge_nodes)(const void*, node<std::size_t>*, node<std::size_t>*));
 
 			node<std::size_t>* query(const range& query_segment) const;
 
-			void* container_cookie;
+			const void* container_cookie;
 			std::size_t size;
-			node<std::size_t>*(*merge_nodes)(void*, node<std::size_t>*, node<std::size_t>*);
+			node<std::size_t>*(*merge_nodes)(const void*, node<std::size_t>*, node<std::size_t>*);
 
 		private:
 			node<std::size_t>* build_tree(node_type type, const range& segment) const;
