@@ -4,20 +4,25 @@
 #include "SegmentTree.h"
 
 template<class T>
-ds::bin_tree::node<std::size_t>* merge_nodes(const void* container_cookie, ds::bin_tree::node<std::size_t>* n1, ds::bin_tree::node<std::size_t>* n2)
+T merge_nodes(T d1, T d2)
 {
-	auto container = (std::vector<T>*)container_cookie;
-	return (*container)[n1->data] <= (*container)[n2->data] ? n1 : n2;
+	return d1 <= d2 ? d1 : d2;
 }
 
+template<class T>
+T get_data(const void* container_cookie, std::size_t index)
+{
+	const auto container = static_cast<const std::vector<T>*>(container_cookie);
+	return (*container)[index];
+}
 int main(int argc, char* argv[])
 {
 	std::vector<int> data{ 18, 17, 13, 19, 15, 11, 20 };
-	ds::bin_tree::seg_tree<int> seg_tree(&data, data.size(), merge_nodes<int>);
+	ds::bin_tree::seg_tree<int> seg_tree(&data, data.size(), get_data<int>, merge_nodes<int>);
 
 	const ds::bin_tree::range query_segment{ 0, data.size() - 1 };
 	const auto min_node = seg_tree.query(query_segment);
 
-	std::cout << "Min[" << query_segment.lower_bound << ", " << query_segment.upper_bound << "] = " << (min_node == nullptr ? -1 : data[min_node->data]) << std::endl;
+	std::cout << "Min[" << query_segment.lower_bound << ", " << query_segment.upper_bound << "] = " << (!min_node.is_valid ? -1 : min_node.data) << std::endl;
 	return 0;
 }
