@@ -13,7 +13,7 @@ namespace ds
 		{
 		public:
 			explicit node(T data, const node_type type) : node_type(type), ancestor(nullptr), left_child(nullptr),
-			                                              right_child(nullptr), height(1), data(data), metadata(nullptr)
+				right_child(nullptr), height(1), data(data)
 			{
 			}
 
@@ -27,8 +27,6 @@ namespace ds
 			node<T> *right_child;
 			long long height;
 			T data;
-
-			void* metadata;
 		};
 
 		template <typename T>
