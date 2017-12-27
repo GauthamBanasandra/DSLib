@@ -2,6 +2,8 @@
 #include "Node.h"
 #include "BinaryTree.h"
 
+#include <unordered_map>
+
 namespace ds
 {
 	namespace bin_tree
@@ -25,7 +27,8 @@ namespace ds
 		public:
 			explicit seg_tree(const void* container_cookie, std::size_t size, T(*get_data)(const void*, std::size_t), T(*merge_nodes)(T, T));
 
-			response<T> query(const range& query_segment) const;
+			response<T> query(const range& query_segment);
+			void update_range(const range& update_segment, const T data);
 
 			const void* container_cookie;
 			std::size_t size;
@@ -34,7 +37,11 @@ namespace ds
 
 		private:
 			node<T>* build_tree(node_type type, const range& segment) const;
-			response<T> query(node<T>* n, const range& segment, const range& query_segment) const;
+			response<T> query(node<T>* n, const range& segment, const range& query_segment);
+			void update_range(node<T>* n, const range& segment, const range& update_segment, const T data);
+
+
+			std::unordered_map<node<T>*, T> lazy_store_;
 		};
 
 		template<class T>
@@ -45,10 +52,17 @@ namespace ds
 		}
 
 		template<class T>
-		response<T> seg_tree<T>::query(const range& query_segment) const
+		response<T> seg_tree<T>::query(const range& query_segment)
 		{
 			const range segment{ 0, size - 1 };
 			return query(this->root, segment, query_segment);
+		}
+
+		template <class T>
+		void seg_tree<T>::update_range(const range& update_segment, const T data)
+		{
+			const range segment{ 0, size - 1 };
+			return update_range(this->root, segment, update_segment, data);
 		}
 
 		template<class T>
@@ -77,11 +91,41 @@ namespace ds
 
 
 		template<class T>
-		response<T> seg_tree<T>::query(node<T>* n, const range& segment, const range& query_segment) const
+		response<T> seg_tree<T>::query(node<T>* n, const range& segment, const range& query_segment)
 		{
 			if (query_segment.lower_bound > segment.upper_bound || query_segment.upper_bound < segment.lower_bound)
 			{
 				return response<T>{ false };
+			}
+
+			auto find = lazy_store_.find(n);
+			if (find != lazy_store_.end())
+			{
+				n->data = merge_nodes(n->data, find->second);
+				if (segment.lower_bound != segment.upper_bound)
+				{
+					auto left_find = lazy_store_.find(n->left_child);
+					if (left_find != lazy_store_.end())
+					{
+						left_find->second = merge_nodes(left_find->second, find->second);
+					}
+					else
+					{
+						lazy_store_[n->left_child] = find->second;
+					}
+
+					auto right_find = lazy_store_.find(n->right_child);
+					if (right_find != lazy_store_.end())
+					{
+						right_find->second = merge_nodes(right_find->second, find->second);
+					}
+					else
+					{
+						lazy_store_[n->right_child] = find->second;
+					}
+				}
+
+				lazy_store_.erase(find);
 			}
 
 			if (segment.lower_bound >= query_segment.lower_bound && segment.upper_bound <= query_segment.upper_bound)
@@ -92,23 +136,104 @@ namespace ds
 			range new_segment;
 			new_segment.lower_bound = segment.lower_bound;
 			new_segment.upper_bound = (segment.lower_bound + segment.upper_bound) >> 1;
-			const auto left_child = query(n->left_child, new_segment, query_segment);
+			const auto left_response = query(n->left_child, new_segment, query_segment);
 
 			new_segment.lower_bound = new_segment.upper_bound + 1;
 			new_segment.upper_bound = segment.upper_bound;
-			const auto right_child = query(n->right_child, new_segment, query_segment);
+			const auto right_response = query(n->right_child, new_segment, query_segment);
 
-			if (!left_child.is_valid)
+			if (!left_response.is_valid)
 			{
-				return right_child;
+				return right_response;
 			}
 
-			if (!right_child.is_valid)
+			if (!right_response.is_valid)
 			{
-				return left_child;
+				return left_response;
 			}
 
-			return response<T>{ true, merge_nodes(left_child.data, right_child.data) };
+			return response<T>{ true, merge_nodes(left_response.data, right_response.data) };
+		}
+
+		template <class T>
+		void seg_tree<T>::update_range(node<T>* n, const range& segment, const range& update_segment, const T data)
+		{
+			auto find = lazy_store_.find(n);
+			if (find != lazy_store_.end())
+			{
+				n->data = find->second;
+				//n->data = merge_nodes(n->data, find->second);
+				if (segment.lower_bound != segment.upper_bound)
+				{
+					auto left_find = lazy_store_.find(n->left_child);
+					if (left_find != lazy_store_.end())
+					{
+						left_find->second = merge_nodes(left_find->second, find->second);
+					}
+					else
+					{
+						lazy_store_[n->left_child] = find->second;
+					}
+
+					auto right_find = lazy_store_.find(n->right_child);
+					if (right_find != lazy_store_.end())
+					{
+						right_find->second = merge_nodes(right_find->second, find->second);
+					}
+					else
+					{
+						lazy_store_[n->right_child] = find->second;
+					}
+				}
+
+				lazy_store_.erase(find);
+			}
+
+			if (update_segment.lower_bound > segment.upper_bound || update_segment.upper_bound < segment.lower_bound)
+			{
+				return;
+			}
+
+			if (segment.lower_bound >= update_segment.lower_bound && segment.upper_bound <= update_segment.upper_bound)
+			{
+				n->data = data;
+				//n->data = merge_nodes(n->data, data);
+				if (segment.lower_bound != segment.upper_bound)
+				{
+					auto left_find = lazy_store_.find(n->left_child);
+					if (left_find != lazy_store_.end())
+					{
+						left_find->second = merge_nodes(left_find->second, data);
+					}
+					else
+					{
+						lazy_store_[n->left_child] = data;
+					}
+
+					auto right_find = lazy_store_.find(n->right_child);
+					if (right_find != lazy_store_.end())
+					{
+						right_find->second = merge_nodes(right_find->second, data);
+					}
+					else
+					{
+						lazy_store_[n->right_child] = data;
+					}
+				}
+
+				return;
+			}
+
+			range new_segment;
+			new_segment.lower_bound = segment.lower_bound;
+			new_segment.upper_bound = (segment.lower_bound + segment.upper_bound) >> 1;
+			update_range(n->left_child, new_segment, update_segment, data);
+
+			new_segment.lower_bound = new_segment.upper_bound + 1;
+			new_segment.upper_bound = segment.upper_bound;
+			update_range(n->right_child, new_segment, update_segment, data);
+
+			n->data = merge_nodes(n->left_child->data, n->right_child->data);
 		}
 	}
 }
