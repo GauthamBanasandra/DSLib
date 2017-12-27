@@ -27,7 +27,7 @@ namespace ds
 		class seg_tree : public binary_tree<T>
 		{
 		public:
-			explicit seg_tree(const void* container_cookie, std::size_t size, T(*get_data)(const void*, std::size_t), T(*merge_nodes)(T, T));
+			explicit seg_tree(const void* container_cookie, std::size_t size, T(*access_data)(const void*, std::size_t), T(*merge_nodes)(T, T));
 
 			response<T> query(const range& query_segment);
 			void update_range(const range& update_segment, const T data, const update_mode mode);
@@ -35,7 +35,7 @@ namespace ds
 			const void* container_cookie;
 			std::size_t size;
 			T(*merge_nodes)(T, T);
-			T(*get_data)(const void*, std::size_t);
+			T(*access_data)(const void*, std::size_t);
 
 		private:
 			node<T>* build_tree(node_type type, const range& segment) const;
@@ -46,7 +46,7 @@ namespace ds
 		};
 
 		template<class T>
-		seg_tree<T>::seg_tree(const void* container_cookie, const std::size_t size, T(*get_data)(const void*, std::size_t), T(*merge_nodes)(T, T)) : container_cookie(container_cookie), size(size), merge_nodes(merge_nodes), get_data(get_data)
+		seg_tree<T>::seg_tree(const void* container_cookie, const std::size_t size, T(*access_data)(const void*, std::size_t), T(*merge_nodes)(T, T)) : container_cookie(container_cookie), size(size), merge_nodes(merge_nodes), access_data(access_data)
 		{
 			const range segment{ 0, size - 1 };
 			this->root = build_tree(node_type::k_root, segment);
@@ -71,7 +71,7 @@ namespace ds
 		{
 			if (segment.lower_bound == segment.upper_bound)
 			{
-				return new node<T>(get_data(container_cookie, segment.lower_bound), type);
+				return new node<T>(access_data(container_cookie, segment.lower_bound), type);
 			}
 
 			range new_segment;
