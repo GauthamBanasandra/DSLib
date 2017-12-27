@@ -21,6 +21,8 @@ namespace ds
 			T data;
 		};
 
+		enum class update_mode { k_memory, k_memoryless };
+
 		template<class T>
 		class seg_tree : public binary_tree<T>
 		{
@@ -28,7 +30,7 @@ namespace ds
 			explicit seg_tree(const void* container_cookie, std::size_t size, T(*get_data)(const void*, std::size_t), T(*merge_nodes)(T, T));
 
 			response<T> query(const range& query_segment);
-			void update_range(const range& update_segment, const T data);
+			void update_range(const range& update_segment, const T data, const update_mode mode);
 
 			const void* container_cookie;
 			std::size_t size;
@@ -38,8 +40,7 @@ namespace ds
 		private:
 			node<T>* build_tree(node_type type, const range& segment) const;
 			response<T> query(node<T>* n, const range& segment, const range& query_segment);
-			void update_range(node<T>* n, const range& segment, const range& update_segment, const T data);
-
+			void update_range(node<T>* n, const range& segment, const range& update_segment, const T data, const update_mode mode);
 
 			std::unordered_map<node<T>*, T> lazy_store_;
 		};
@@ -59,10 +60,10 @@ namespace ds
 		}
 
 		template <class T>
-		void seg_tree<T>::update_range(const range& update_segment, const T data)
+		void seg_tree<T>::update_range(const range& update_segment, const T data, const update_mode mode)
 		{
 			const range segment{ 0, size - 1 };
-			return update_range(this->root, segment, update_segment, data);
+			return update_range(this->root, segment, update_segment, data, mode);
 		}
 
 		template<class T>
@@ -156,13 +157,26 @@ namespace ds
 		}
 
 		template <class T>
-		void seg_tree<T>::update_range(node<T>* n, const range& segment, const range& update_segment, const T data)
+		void seg_tree<T>::update_range(node<T>* n, const range& segment, const range& update_segment, const T data, const update_mode mode)
 		{
 			auto find = lazy_store_.find(n);
 			if (find != lazy_store_.end())
 			{
-				n->data = find->second;
-				//n->data = merge_nodes(n->data, find->second);
+				switch (mode)
+				{
+				case update_mode::k_memory:
+					n->data = merge_nodes(n->data, find->second);
+					break;
+
+				case update_mode::k_memoryless:
+					n->data = find->second;
+					break;
+
+				default:
+					// Not handled for this update_mode
+					assert(false);
+				}
+
 				if (segment.lower_bound != segment.upper_bound)
 				{
 					auto left_find = lazy_store_.find(n->left_child);
@@ -196,8 +210,21 @@ namespace ds
 
 			if (segment.lower_bound >= update_segment.lower_bound && segment.upper_bound <= update_segment.upper_bound)
 			{
-				n->data = data;
-				//n->data = merge_nodes(n->data, data);
+				switch (mode)
+				{
+				case update_mode::k_memory:
+					n->data = merge_nodes(n->data, data);
+					break;
+
+				case update_mode::k_memoryless:
+					n->data = data;
+					break;
+
+				default:
+					// Unhandled for this update_mode
+					assert(false);
+				}
+
 				if (segment.lower_bound != segment.upper_bound)
 				{
 					auto left_find = lazy_store_.find(n->left_child);
@@ -227,11 +254,11 @@ namespace ds
 			range new_segment;
 			new_segment.lower_bound = segment.lower_bound;
 			new_segment.upper_bound = (segment.lower_bound + segment.upper_bound) >> 1;
-			update_range(n->left_child, new_segment, update_segment, data);
+			update_range(n->left_child, new_segment, update_segment, data, mode);
 
 			new_segment.lower_bound = new_segment.upper_bound + 1;
 			new_segment.upper_bound = segment.upper_bound;
-			update_range(n->right_child, new_segment, update_segment, data);
+			update_range(n->right_child, new_segment, update_segment, data, mode);
 
 			n->data = merge_nodes(n->left_child->data, n->right_child->data);
 		}
