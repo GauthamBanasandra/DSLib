@@ -14,3 +14,4 @@
 #include "SegmentTreeGold.h"
 
 #include <vector>
+#include <time.h>
