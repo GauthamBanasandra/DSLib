@@ -38,23 +38,16 @@ void extensive_query(const std::vector<T> &data, ds::bin_tree::seg_tree<T> &seg_
 }
 
 template<class T>
-void extensive_update(const std::vector<T> &data, ds::bin_tree::seg_tree<T> &seg_tree, SegmentTreeGold& seg_tree_gold, T value)
+void extensive_update(std::vector<T> &data, ds::bin_tree::seg_tree<T> &seg_tree, SegmentTreeGold& seg_tree_gold, T value)
 {
 	ds::bin_tree::range update_segment;
 	for (std::size_t i = 0; i < data.size(); ++i)
 	{
-		update_segment.lower_bound = i;
-		for (auto j = i; j < data.size(); ++j)
-		{
-			update_segment.upper_bound = j;
-			seg_tree.update_range(update_segment, value, ds::bin_tree::update_mode::k_memoryless);
-			for (auto k = i; k <= j; ++k)
-			{
-				seg_tree_gold.update_point(k, value);
-			}
-
-			extensive_query(data, seg_tree, seg_tree_gold);
-		}
+		update_segment.lower_bound = update_segment.upper_bound = i;
+		seg_tree.update_range(update_segment, value, ds::bin_tree::update_mode::k_memoryless);
+		seg_tree_gold.update_point(i, value);
+		data[i] = value;
+		extensive_query(data, seg_tree, seg_tree_gold);
 	}
 }
 
