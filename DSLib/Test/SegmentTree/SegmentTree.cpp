@@ -119,4 +119,28 @@ namespace SegmentTree
 			extensive_update(data, seg_tree, seg_tree_gold, 0, true);
 		}
 	};
+
+	TEST_CLASS(benchmark)
+	{
+	public:
+		TEST_METHOD(benchmark_query)
+		{
+			const auto data = generate_data(1000000);
+			//SegmentTreeGold seg_tree_gold(data);
+			ds::bin_tree::seg_tree<int> seg_tree(&data, data.size(), access_data<int>, merge_nodes<int>);
+		}
+
+		TEST_METHOD(benchmark_update)
+		{
+			const auto data_size = 1000000;
+			const auto data = generate_data(data_size);
+
+			/*SegmentTreeGold seg_tree_gold(data);
+			seg_tree_gold.update_point(data_size >> 1, 10);*/
+			
+			ds::bin_tree::seg_tree<int> seg_tree(&data, data.size(), access_data<int>, merge_nodes<int>);
+			const ds::bin_tree::range segment{ data_size >> 1, (data_size >> 1) + 1 };
+			seg_tree.update_range(segment, 10, ds::bin_tree::update_mode::k_memoryless);
+		}
+	};
 }
