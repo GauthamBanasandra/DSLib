@@ -51,7 +51,9 @@ namespace ds
 		private:
 			node<T>* build_tree(node_type type, const range& segment) const;
 			response<T> query(node<T>* n, const range& segment, const range& query_segment);
+			void update_node(node<T>* n, const T data, const update_mode mode);
 			void update_range(node<T>* n, const range& segment, const range& update_segment, const T data, const update_mode mode);
+			void propagate_laziness(node<T>* n, T data);
 
 			// Stores the data which will needs to get updated in the next query/update in each node
 			std::unordered_map<node<T>*, T> lazy_store_;
@@ -124,29 +126,9 @@ namespace ds
 			{
 				// Current node has some lazy data pending, update it first
 				n->data = merge_nodes(n->data, find->second);
-				if (segment.lower_bound != segment.upper_bound)
-				{
-					// Mark its  children as lazy, with the lazy data
-					auto left_find = lazy_store_.find(n->left_child);
-					if (left_find != lazy_store_.end())
-					{
-						left_find->second = merge_nodes(left_find->second, find->second);
-					}
-					else
-					{
-						lazy_store_[n->left_child] = find->second;
-					}
 
-					auto right_find = lazy_store_.find(n->right_child);
-					if (right_find != lazy_store_.end())
-					{
-						right_find->second = merge_nodes(right_find->second, find->second);
-					}
-					else
-					{
-						lazy_store_[n->right_child] = find->second;
-					}
-				}
+				// If the current node isn't a leaf node, then propagate laziness to its children
+				propagate_laziness(n, find->second);
 
 				// Get rid of the laziness!
 				lazy_store_.erase(find);
@@ -181,6 +163,26 @@ namespace ds
 			return response<T>{ true, merge_nodes(left_response.data, right_response.data) };
 		}
 
+		// Update the node's data with the one provided according to the mode
+		template <class T>
+		void seg_tree<T>::update_node(node<T>* n, const T data, const update_mode mode)
+		{
+			switch (mode)
+			{
+			case update_mode::k_memory:
+				n->data = merge_nodes(n->data, data);
+				break;
+
+			case update_mode::k_memoryless:
+				n->data = data;
+				break;
+
+			default:
+				// Unhandled for this update_mode
+				assert(false);
+			}
+		}
+
 		template <class T>
 		void seg_tree<T>::update_range(node<T>* n, const range& segment, const range& update_segment, const T data, const update_mode mode)
 		{
@@ -188,44 +190,10 @@ namespace ds
 			if (find != lazy_store_.end())
 			{
 				// If the current node is lazy, need to update the node with the lazy value, if it exists
-				switch (mode)
-				{
-				case update_mode::k_memory:
-					n->data = merge_nodes(n->data, find->second);
-					break;
-
-				case update_mode::k_memoryless:
-					n->data = find->second;
-					break;
-
-				default:
-					// Not handled for this update_mode
-					assert(false);
-				}
+				update_node(n, find->second, mode);
 
 				// If the current node isn't a leaf node, mark its children as lazy
-				if (segment.lower_bound != segment.upper_bound)
-				{
-					auto left_find = lazy_store_.find(n->left_child);
-					if (left_find != lazy_store_.end())
-					{
-						left_find->second = merge_nodes(left_find->second, find->second);
-					}
-					else
-					{
-						lazy_store_[n->left_child] = find->second;
-					}
-
-					auto right_find = lazy_store_.find(n->right_child);
-					if (right_find != lazy_store_.end())
-					{
-						right_find->second = merge_nodes(right_find->second, find->second);
-					}
-					else
-					{
-						lazy_store_[n->right_child] = find->second;
-					}
-				}
+				propagate_laziness(n, find->second);
 
 				lazy_store_.erase(find);
 			}
@@ -239,45 +207,10 @@ namespace ds
 			// Completely within query range
 			if (segment.lower_bound >= update_segment.lower_bound && segment.upper_bound <= update_segment.upper_bound)
 			{
-				switch (mode)
-				{
-				case update_mode::k_memory:
-					n->data = merge_nodes(n->data, data);
-					break;
-
-				case update_mode::k_memoryless:
-					n->data = data;
-					break;
-
-				default:
-					// Unhandled for this update_mode
-					assert(false);
-				}
+				update_node(n, data, mode);
 
 				// If the current node isn't a leaf node, mark its children as lazy
-				if (segment.lower_bound != segment.upper_bound)
-				{
-					auto left_find = lazy_store_.find(n->left_child);
-					if (left_find != lazy_store_.end())
-					{
-						left_find->second = merge_nodes(left_find->second, data);
-					}
-					else
-					{
-						lazy_store_[n->left_child] = data;
-					}
-
-					auto right_find = lazy_store_.find(n->right_child);
-					if (right_find != lazy_store_.end())
-					{
-						right_find->second = merge_nodes(right_find->second, data);
-					}
-					else
-					{
-						lazy_store_[n->right_child] = data;
-					}
-				}
-
+				propagate_laziness(n, data);
 				return;
 			}
 
@@ -291,6 +224,37 @@ namespace ds
 			update_range(n->right_child, new_segment, update_segment, data, mode);
 
 			n->data = merge_nodes(n->left_child->data, n->right_child->data);
+		}
+
+		// Induces/updates the laziness associated with the current node to its children
+		template <class T>
+		void seg_tree<T>::propagate_laziness(node<T>* n, T data)
+		{
+			if (n->left_child != nullptr || n->right_child != nullptr)
+			{
+				return;
+			}
+
+			// Mark its  children as lazy, with the lazy data
+			auto left_find = lazy_store_.find(n->left_child);
+			if (left_find != lazy_store_.end())
+			{
+				left_find->second = merge_nodes(left_find->second, data);
+			}
+			else
+			{
+				lazy_store_[n->left_child] = data;
+			}
+
+			auto right_find = lazy_store_.find(n->right_child);
+			if (right_find != lazy_store_.end())
+			{
+				right_find->second = merge_nodes(right_find->second, data);
+			}
+			else
+			{
+				lazy_store_[n->right_child] = data;
+			}
 		}
 	}
 }
