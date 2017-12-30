@@ -4,7 +4,7 @@
 #include "SegmentTree.h"
 
 template<class T>
-T merge_nodes(const T& d1, const T& d2)
+T merge_nodes(T d1, T d2)
 {
 	return d1 <= d2 ? d1 : d2;
 }

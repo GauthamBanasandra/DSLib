@@ -2,10 +2,9 @@
 #include "CppUnitTest.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-using map_ds = std::unordered_map<int, int>;
 
 template<class T>
-T merge_nodes(const T& d1, const T& d2)
+T merge_nodes(T d1, T d2)
 {
 	return d1 <= d2 ? d1 : d2;
 }
@@ -15,28 +14,6 @@ T access_data(const void* container_cookie, std::size_t index)
 {
 	const auto container = static_cast<const std::vector<T>*>(container_cookie);
 	return (*container)[index];
-}
-
-
-template<class T>
-T merge_nodes_map(const T& d1, const T& d2)
-{
-	map_ds f(d1);
-	for (const auto& kv : d2)
-	{
-		f[kv.first] += kv.second;
-	}
-
-	return f;
-}
-
-template<class T, class E>
-T access_map(const void* container_cookie, std::size_t index)
-{
-	const auto container = static_cast<const std::vector<E>*>(container_cookie);
-	map_ds f;
-	f[(*container)[index]] = 1;
-	return f;
 }
 
 template<class T>
@@ -146,13 +123,11 @@ namespace SegmentTree
 	TEST_CLASS(benchmark)
 	{
 	public:
-		TEST_METHOD(benchmark_build_tree)
+		TEST_METHOD(benchmark_query)
 		{
-			const auto data = generate_data(100000);
-			ds::bin_tree::seg_tree<int> seg_tree(&data, data.size(), access_data<int>, merge_nodes<int>);
-
+			const auto data = generate_data(1000000);
 			//SegmentTreeGold seg_tree_gold(data);
-			//ds::bin_tree::seg_tree<map_ds> seg_tree(&data, data.size(), access_map<map_ds, int>, merge_nodes_map<map_ds>);
+			ds::bin_tree::seg_tree<int> seg_tree(&data, data.size(), access_data<int>, merge_nodes<int>);
 		}
 
 		TEST_METHOD(benchmark_update)

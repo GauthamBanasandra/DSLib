@@ -35,7 +35,7 @@ namespace ds
 			// container_cookie is a void pointer to the container
 			// access_data - function pointer which returns the data from the container for the given index
 			// merge_nodes - function pointer which performs the operation on 2 data points (min, max, sum etc.) and returns the result
-			explicit seg_tree(const void* container_cookie, std::size_t size, T(*access_data)(const void*, std::size_t), T(*merge_nodes)(const T&, const T&));
+			explicit seg_tree(const void* container_cookie, std::size_t size, T(*access_data)(const void*, std::size_t), T(*merge_nodes)(T, T));
 
 			// Returns the result of the operation on the specified segment
 			response<T> query(const range& query_segment);
@@ -45,7 +45,7 @@ namespace ds
 
 			const void* container_cookie;
 			std::size_t size;
-			T(*merge_nodes)(const T&, const T&);
+			T(*merge_nodes)(T, T);
 			T(*access_data)(const void*, std::size_t);
 
 		private:
@@ -60,7 +60,7 @@ namespace ds
 		};
 
 		template<class T>
-		seg_tree<T>::seg_tree(const void* container_cookie, const std::size_t size, T(*access_data)(const void*, std::size_t), T(*merge_nodes)(const T&, const T&)) : container_cookie(container_cookie), size(size), merge_nodes(merge_nodes), access_data(access_data)
+		seg_tree<T>::seg_tree(const void* container_cookie, const std::size_t size, T(*access_data)(const void*, std::size_t), T(*merge_nodes)(T, T)) : container_cookie(container_cookie), size(size), merge_nodes(merge_nodes), access_data(access_data)
 		{
 			const range segment{ 0, size - 1 };
 			this->root = build_tree(node_type::k_root, segment);
