@@ -1,5 +1,5 @@
 package Lib.SegmentTree;
 
-public interface AccessCollection<T> {
-    T access(Object collectionCookie, int index);
+public interface AccessCollection<C, T> {
+    T access(C collectionCookie, int index);
 }

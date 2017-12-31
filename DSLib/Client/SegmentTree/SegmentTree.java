@@ -11,16 +11,9 @@ public class SegmentTree {
         numbers.add(95);
         numbers.add(2);
 
-        Lib.SegmentTree.SegmentTree segTree = new Lib.SegmentTree.SegmentTree(numbers, numbers.size(),
-                (collectionCookie, index) -> {
-                    Vector<Integer> collection = (Vector<Integer>) collectionCookie;
-                    return collection.get(index);
-                },
-                (d1, d2) -> {
-                    Integer p1 = (Integer) d1;
-                    Integer p2 = (Integer) d2;
-                    return p1 <= p2 ? p1 : p2;
-                });
+        Lib.SegmentTree.SegmentTree<Vector<Integer>, Integer> segTree = new Lib.SegmentTree.SegmentTree<>(numbers, numbers.size(),
+                Vector::get,
+                (d1, d2) -> d1 <= d2 ? d1 : d2);
 
         segTree.preOrder(n -> System.out.println(n.data));
     }

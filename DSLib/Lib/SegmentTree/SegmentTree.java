@@ -6,8 +6,8 @@ import Lib.Tree.NodeType;
 
 import java.util.HashMap;
 
-public class SegmentTree<T> extends BinaryTree<T> {
-    public SegmentTree(Object collectionCookie, int size, AccessCollection<T> accessCollection, MergeNodes<T> mergeNodes) {
+public class SegmentTree<C, T> extends BinaryTree<T> {
+    public SegmentTree(C collectionCookie, int size, AccessCollection<C, T> accessCollection, MergeNodes<T> mergeNodes) {
         this.collectionCookie = collectionCookie;
         this.size = size;
         this.accessCollection = accessCollection;
@@ -94,10 +94,10 @@ public class SegmentTree<T> extends BinaryTree<T> {
         return parent;
     }
 
-    public Object collectionCookie;
+    public C collectionCookie;
     public int size;
     public MergeNodes<T> mergeNodes;
-    public AccessCollection<T> accessCollection;
+    public AccessCollection<C, T> accessCollection;
 
     private HashMap<Node<T>, T> lazyStore;
 }
