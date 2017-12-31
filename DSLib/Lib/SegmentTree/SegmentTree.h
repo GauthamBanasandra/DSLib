@@ -230,6 +230,7 @@ namespace ds
 		template <class T>
 		void seg_tree<T>::propagate_laziness(node<T>* n, T data)
 		{
+		    // TODO : Verify this - outcome is that it's a leaf node. Change || to &&
 			if (n->left_child != nullptr || n->right_child != nullptr)
 			{
 				return;

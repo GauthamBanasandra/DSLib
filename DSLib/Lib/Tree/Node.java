@@ -1,7 +1,7 @@
 package Lib.Tree;
 
 public class Node<T> {
-    public Node(NodeType type, T data) {
+    public Node(T data, NodeType type) {
         this.type = type;
         this.data = data;
     }
