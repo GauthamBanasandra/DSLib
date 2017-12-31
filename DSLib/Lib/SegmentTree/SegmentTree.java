@@ -7,8 +7,8 @@ import Lib.Tree.NodeType;
 import java.util.HashMap;
 
 public class SegmentTree<C, T> extends BinaryTree<T> {
-    public SegmentTree(C collectionCookie, int size, AccessCollection<C, T> accessCollection, MergeNodes<T> mergeNodes) {
-        this.collectionCookie = collectionCookie;
+    public SegmentTree(C collection, int size, AccessCollection<C, T> accessCollection, MergeNodes<T> mergeNodes) {
+        this.collection = collection;
         this.size = size;
         this.accessCollection = accessCollection;
         this.mergeNodes = mergeNodes;
@@ -78,7 +78,7 @@ public class SegmentTree<C, T> extends BinaryTree<T> {
 
     private Node<T> buildTree(NodeType type, Range segment) {
         if (segment.lowerBound == segment.upperBound) {
-            return new Node<>(accessCollection.access(collectionCookie, segment.lowerBound), type);
+            return new Node<>(accessCollection.access(collection, segment.lowerBound), type);
         }
 
         Range leftSegment = new Range(segment.lowerBound, (segment.lowerBound + segment.upperBound) >> 1);
@@ -94,7 +94,7 @@ public class SegmentTree<C, T> extends BinaryTree<T> {
         return parent;
     }
 
-    public C collectionCookie;
+    public C collection;
     public int size;
     public MergeNodes<T> mergeNodes;
     public AccessCollection<C, T> accessCollection;
