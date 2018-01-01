@@ -9,15 +9,14 @@ T merge_nodes(T d1, T d2)
 	return d1 <= d2 ? d1 : d2;
 }
 
-template<class T>
-T access_data(const void* container_cookie, std::size_t index)
+template<class C, class T>
+T access_data(const C& container, const std::size_t index)
 {
-	const auto container = static_cast<const std::vector<T>*>(container_cookie);
-	return (*container)[index];
+	return container[index];
 }
 
-template<class T>
-void extensive_query(const std::vector<T> &data, ds::bin_tree::seg_tree<T> &seg_tree, SegmentTreeGold &seg_tree_gold)
+template<class C, class T>
+void extensive_query(const std::vector<T> &data, ds::bin_tree::seg_tree<C, T> &seg_tree, SegmentTreeGold &seg_tree_gold)
 {
 	ds::bin_tree::range query_segment;
 	for (std::size_t i = 0; i < data.size(); ++i)
@@ -37,8 +36,8 @@ void extensive_query(const std::vector<T> &data, ds::bin_tree::seg_tree<T> &seg_
 	}
 }
 
-template<class T>
-void extensive_update(std::vector<T> &data, ds::bin_tree::seg_tree<T> &seg_tree, SegmentTreeGold& seg_tree_gold, T new_value, bool random)
+template<class C, class T>
+void extensive_update(std::vector<T> &data, ds::bin_tree::seg_tree<C, T> &seg_tree, SegmentTreeGold& seg_tree_gold, T new_value, const bool random)
 {
 	auto value = new_value;
 	ds::bin_tree::range update_segment;
@@ -82,7 +81,7 @@ namespace SegmentTree
 		TEST_METHOD(query_test)
 		{
 			std::vector<int> data{ 18, 17, 13, 19, 15, 11, 20 };
-			ds::bin_tree::seg_tree<int> seg_tree(&data, data.size(), access_data<int>, merge_nodes<int>);
+			ds::bin_tree::seg_tree<std::vector<int>, int> seg_tree(data, data.size(), access_data, merge_nodes);
 			SegmentTreeGold seg_tree_gold(data);
 
 			extensive_query(data, seg_tree, seg_tree_gold);
@@ -91,7 +90,7 @@ namespace SegmentTree
 		TEST_METHOD(update_test)
 		{
 			std::vector<int> data{ 18, 17, 13, 19, 15, 11, 20 };
-			ds::bin_tree::seg_tree<int> seg_tree(&data, data.size(), access_data<int>, merge_nodes<int>);
+			ds::bin_tree::seg_tree<std::vector<int>, int> seg_tree(data, data.size(), access_data, merge_nodes);
 			SegmentTreeGold seg_tree_gold(data);
 
 			extensive_update(data, seg_tree, seg_tree_gold, 1, false);
@@ -104,7 +103,7 @@ namespace SegmentTree
 		TEST_METHOD(random_query_test)
 		{
 			auto data = generate_data(1000);
-			ds::bin_tree::seg_tree<int> seg_tree(&data, data.size(), access_data<int>, merge_nodes<int>);
+			ds::bin_tree::seg_tree<std::vector<int>, int> seg_tree(data, data.size(), access_data, merge_nodes);
 			SegmentTreeGold seg_tree_gold(data);
 
 			extensive_query(data, seg_tree, seg_tree_gold);
@@ -113,7 +112,7 @@ namespace SegmentTree
 		TEST_METHOD(random_update_test)
 		{
 			auto data = generate_data(20);
-			ds::bin_tree::seg_tree<int> seg_tree(&data, data.size(), access_data<int>, merge_nodes<int>);
+			ds::bin_tree::seg_tree<std::vector<int>, int> seg_tree(data, data.size(), access_data, merge_nodes);
 			SegmentTreeGold seg_tree_gold(data);
 
 			extensive_update(data, seg_tree, seg_tree_gold, 0, true);
@@ -127,7 +126,7 @@ namespace SegmentTree
 		{
 			const auto data = generate_data(1000000);
 			//SegmentTreeGold seg_tree_gold(data);
-			ds::bin_tree::seg_tree<int> seg_tree(&data, data.size(), access_data<int>, merge_nodes<int>);
+			ds::bin_tree::seg_tree<std::vector<int>, std::size_t> seg_tree(data, data.size(), access_data, merge_nodes);
 		}
 
 		TEST_METHOD(benchmark_update)
@@ -137,8 +136,8 @@ namespace SegmentTree
 
 			/*SegmentTreeGold seg_tree_gold(data);
 			seg_tree_gold.update_point(data_size >> 1, 10);*/
-			
-			ds::bin_tree::seg_tree<int> seg_tree(&data, data.size(), access_data<int>, merge_nodes<int>);
+
+			ds::bin_tree::seg_tree<std::vector<int>, std::size_t> seg_tree(data, data.size(), access_data, merge_nodes);
 			const ds::bin_tree::range segment{ data_size >> 1, (data_size >> 1) + 1 };
 			seg_tree.update_range(segment, 10, ds::bin_tree::update_mode::k_memoryless);
 		}
