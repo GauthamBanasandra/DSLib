@@ -125,7 +125,7 @@ namespace ds
 			if (find != lazy_store_.end())
 			{
 				// Current node has some lazy data pending, update it first
-				n->data = merge_nodes(n->data, find->second);
+				update_node(n, find->second, update_mode::k_memoryless);
 
 				// If the current node isn't a leaf node, then propagate laziness to its children
 				propagate_laziness(n, find->second);
@@ -236,25 +236,8 @@ namespace ds
 			}
 
 			// Mark its  children as lazy, with the lazy data
-			auto left_find = lazy_store_.find(n->left_child);
-			if (left_find != lazy_store_.end())
-			{
-				left_find->second = merge_nodes(left_find->second, data);
-			}
-			else
-			{
-				lazy_store_[n->left_child] = data;
-			}
-
-			auto right_find = lazy_store_.find(n->right_child);
-			if (right_find != lazy_store_.end())
-			{
-				right_find->second = merge_nodes(right_find->second, data);
-			}
-			else
-			{
-				lazy_store_[n->right_child] = data;
-			}
+			lazy_store_[n->left_child] = data;
+			lazy_store_[n->right_child] = data;
 		}
 	}
 }
