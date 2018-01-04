@@ -15,10 +15,16 @@ T access_data(const C& container, const std::size_t index)
 	return container[index];
 }
 
+template<class T, class U>
+T update_data(const ds::bin_tree::range& segment, const T& node_data, const U& data)
+{
+	return data;
+}
+
 int main(int argc, char* argv[])
 {
 	std::vector<int> data{ 18, 17, 13, 19, 15, 11, 20 };
-	ds::bin_tree::seg_tree<std::vector<int>, int> seg_tree(data, data.size(), access_data, merge_nodes);
+	ds::bin_tree::seg_tree<std::vector<int>, int, int> seg_tree(data, data.size(), access_data, merge_nodes, update_data);
 
 	const ds::bin_tree::range query_segment{ 0, 6 };
 	auto min_node = seg_tree.query(query_segment);
