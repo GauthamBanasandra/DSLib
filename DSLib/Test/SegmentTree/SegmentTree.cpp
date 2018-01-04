@@ -24,7 +24,7 @@ void extensive_query(const std::vector<T> &data, ds::bin_tree::seg_tree<C, T> &s
 		query_segment.lower_bound = i;
 		for (auto j = i; j < data.size(); ++j)
 		{
-			query_segment.upper_bound = j;			
+			query_segment.upper_bound = j;
 			auto expected = data[seg_tree_gold.rmq(i, j)];
 			auto actual = seg_tree.query(query_segment);
 
@@ -49,7 +49,7 @@ void extensive_update(std::vector<T> &data, ds::bin_tree::seg_tree<C, T> &seg_tr
 		}
 
 		update_segment.lower_bound = update_segment.upper_bound = i;
-		seg_tree.update_range(update_segment, value, ds::bin_tree::update_mode::k_memoryless);
+		seg_tree.update_range(update_segment, value);
 		seg_tree_gold.update_point(i, value);
 		data[i] = value;
 		extensive_query(data, seg_tree, seg_tree_gold);
@@ -126,7 +126,7 @@ namespace SegmentTree
 			const ds::bin_tree::range update_segment{ 0, data.size() - 1 };
 
 			auto value = 1;
-			seg_tree.update_range(update_segment, value, ds::bin_tree::update_mode::k_memoryless);
+			seg_tree.update_range(update_segment, value);
 			for (auto i = update_segment.lower_bound; i <= update_segment.upper_bound; ++i)
 			{
 				seg_tree_gold.update_point(i, value);
@@ -134,7 +134,7 @@ namespace SegmentTree
 			}
 
 			value = 100;
-			seg_tree.update_range(update_segment, value, ds::bin_tree::update_mode::k_memoryless);
+			seg_tree.update_range(update_segment, value);
 			for (auto i = update_segment.lower_bound; i <= update_segment.upper_bound; ++i)
 			{
 				seg_tree_gold.update_point(i, value);
@@ -165,7 +165,7 @@ namespace SegmentTree
 
 			ds::bin_tree::seg_tree<std::vector<int>, std::size_t> seg_tree(data, data.size(), access_data, merge_nodes);
 			const ds::bin_tree::range segment{ data_size >> 1, (data_size >> 1) + 1 };
-			seg_tree.update_range(segment, 10, ds::bin_tree::update_mode::k_memoryless);
+			seg_tree.update_range(segment, 10);
 		}
 	};
 }

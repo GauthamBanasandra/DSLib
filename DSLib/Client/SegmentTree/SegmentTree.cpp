@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
 	const auto value = 100;
 	const ds::bin_tree::range update_segment{ 0, 6 };
 	std::cout << "Update[" << update_segment.lower_bound << ", " << update_segment.upper_bound << "] = " << value << std::endl;
-	seg_tree.update_range(update_segment, value, ds::bin_tree::update_mode::k_memory);
+	seg_tree.update_range(update_segment, value);
 
 	min_node = seg_tree.query(query_segment);
 	std::cout << "Min[" << query_segment.lower_bound << ", " << query_segment.upper_bound << "] = " << (!min_node.is_valid ? -1 : min_node.data) << std::endl;
