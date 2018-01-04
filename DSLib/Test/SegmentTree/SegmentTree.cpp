@@ -154,7 +154,7 @@ namespace SegmentTree
 	TEST_CLASS(benchmark)
 	{
 	public:
-		TEST_METHOD(benchmark_query)
+		TEST_METHOD(benchmark_build_tree)
 		{
 			const auto data = generate_data(1000000);
 			//SegmentTreeGold seg_tree_gold(data);
@@ -163,20 +163,22 @@ namespace SegmentTree
 
 		TEST_METHOD(benchmark_update)
 		{
-			const auto data_size = 1000000;
+			const auto data_size = 100000;
 			const auto data = generate_data(data_size);
 
-			SegmentTreeGold seg_tree_gold(data);
+			/*SegmentTreeGold seg_tree_gold(data);
 			for (std::size_t i = 0; i < data_size; ++i)
 			{
 				seg_tree_gold.update_point(i, i);
-			}
+			}*/
 
-			/*ds::bin_tree::seg_tree<std::vector<int>, std::size_t, std::size_t> seg_tree(data, data.size(), access_data, merge_nodes, update_data);
+			ds::bin_tree::seg_tree<std::vector<int>, std::size_t, std::size_t> seg_tree(data, data.size(), access_data, merge_nodes, update_data);
+			ds::bin_tree::range segment;
 			for (std::size_t i = 0; i < data_size; ++i)
 			{
-				seg_tree.update_range(ds::bin_tree::range{ i, i }, i);
-			}*/
+				segment.lower_bound = segment.upper_bound = i;
+				seg_tree.update_range(segment, i);
+			}
 		}
 	};
 }
