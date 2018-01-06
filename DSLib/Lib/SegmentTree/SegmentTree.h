@@ -53,7 +53,10 @@ namespace ds
 			response<T> query(node<T>* n, const range& segment, const range& query_segment);
 			void update_range(node<T>* n, const range& segment, const range& update_segment, const U& data);
 			void propagate_laziness(node<T>* n, const U& data);
-			void update_point(node<T>* n, std::size_t l, std::size_t r, std::size_t idx, const T& data);
+			void update_point(node<T>* n, const range& segment, std::size_t idx, const U& data);
+
+			static range left(const range& segment) { return range{ segment.lower_bound, (segment.lower_bound + segment.upper_bound) >> 1 }; }
+			static range right(const range& segment) { return range{ ((segment.lower_bound + segment.upper_bound) >> 1) + 1, segment.upper_bound }; }
 
 			// Stores the data which will needs to get updated in the next query/update in each node
 			std::unordered_map<node<T>*, U> lazy_store_;
@@ -87,7 +90,8 @@ namespace ds
 		template <class C, class T, class U>
 		void seg_tree<C, T, U>::update_point(std::size_t idx, const T& data)
 		{
-			update_point(this->root, 0, size - 1, idx, data);
+			const range segment{ 0, size - 1 };
+			update_point(this->root, segment, idx, data);
 		}
 
 		template<class C, class T, class U>
@@ -99,18 +103,9 @@ namespace ds
 				// Store the c[i] value in the leaf node
 				return new node<T>(access_data(container, segment.lower_bound), type);
 			}
-
-			range new_segment;
-
-			// Recurse left
-			new_segment.lower_bound = segment.lower_bound;
-			new_segment.upper_bound = (segment.lower_bound + segment.upper_bound) >> 1;
-			const auto left_child = build_tree(node_type::k_left_child, new_segment);
-
-			// Recurse right
-			new_segment.lower_bound = new_segment.upper_bound + 1;
-			new_segment.upper_bound = segment.upper_bound;
-			const auto right_child = build_tree(node_type::k_right_child, new_segment);
+		
+			const auto left_child = build_tree(node_type::k_left_child, left(segment));
+			const auto right_child = build_tree(node_type::k_right_child, right(segment));
 
 			// Perform operation on the 2 nodes and store its result in the parent node
 			const auto new_node = new node<T>(merge_nodes(left_child->data, right_child->data), type);
@@ -150,15 +145,8 @@ namespace ds
 				return response<T>{ true, n->data };
 			}
 
-			range new_segment;
-
-			new_segment.lower_bound = segment.lower_bound;
-			new_segment.upper_bound = (segment.lower_bound + segment.upper_bound) >> 1;
-			const auto left_response = query(n->left_child, new_segment, query_segment);
-
-			new_segment.lower_bound = new_segment.upper_bound + 1;
-			new_segment.upper_bound = segment.upper_bound;
-			const auto right_response = query(n->right_child, new_segment, query_segment);
+			const auto left_response = query(n->left_child, left(segment), query_segment);
+			const auto right_response = query(n->right_child, right(segment), query_segment);
 
 			if (!left_response.is_valid)
 			{
@@ -204,14 +192,8 @@ namespace ds
 				return;
 			}
 
-			range new_segment;
-			new_segment.lower_bound = segment.lower_bound;
-			new_segment.upper_bound = (segment.lower_bound + segment.upper_bound) >> 1;
-			update_range(n->left_child, new_segment, update_segment, data);
-
-			new_segment.lower_bound = new_segment.upper_bound + 1;
-			new_segment.upper_bound = segment.upper_bound;
-			update_range(n->right_child, new_segment, update_segment, data);
+			update_range(n->left_child, left(segment), update_segment, data);
+			update_range(n->right_child, right(segment), update_segment, data);
 
 			n->data = merge_nodes(n->left_child->data, n->right_child->data);
 		}
@@ -231,23 +213,23 @@ namespace ds
 		}
 
 		template <class C, class T, class U>
-		void seg_tree<C, T, U>::update_point(node<T>* n, std::size_t l, std::size_t r, std::size_t idx, const T& data)
+		void seg_tree<C, T, U>::update_point(node<T>* n, const range& segment, std::size_t idx, const U& data)
 		{
 			const auto i = idx;
 			const auto j = idx;
-			if (i > r || j < l)
+			if (i > segment.upper_bound || j < segment.lower_bound)
 			{
 				return;
 			}
 
-			if (i == l && j == r)
+			if (i == segment.lower_bound && j == segment.upper_bound)
 			{
-				n->data = data;
+				n->data = update_data(segment, n->data, data);
 				return;
 			}
-
-			update_point(n->left_child, l, (l + r) >> 1, idx, data);
-			update_point(n->right_child, ((l + r) >> 1) + 1, r, idx, data);
+			
+			update_point(n->left_child, left(segment), idx, data);
+			update_point(n->right_child, right(segment), idx, data);
 
 			n->data = merge_nodes(n->left_child->data, n->right_child->data);
 		}
