@@ -43,7 +43,8 @@ void extensive_query(const std::vector<T> &data, ds::bin_tree::seg_tree<C, T, U>
 }
 
 template<class C, class T, class U>
-void extensive_update(std::vector<T> &data, ds::bin_tree::seg_tree<C, T, U> &seg_tree, SegmentTreeGold& seg_tree_gold, T new_value, const bool random)
+void extensive_update(std::vector<T> &data, ds::bin_tree::seg_tree<C, T, U> &seg_tree,
+	SegmentTreeGold& seg_tree_gold, T new_value, const bool random, const bool update_point)
 {
 	auto value = new_value;
 	ds::bin_tree::range update_segment;
@@ -54,8 +55,16 @@ void extensive_update(std::vector<T> &data, ds::bin_tree::seg_tree<C, T, U> &seg
 			value = rand();
 		}
 
-		update_segment.lower_bound = update_segment.upper_bound = i;
-		seg_tree.update_range(update_segment, value);
+		if (update_point)
+		{
+			seg_tree.update_point(i, value);
+		}
+		else
+		{
+			update_segment.lower_bound = update_segment.upper_bound = i;
+			seg_tree.update_range(update_segment, value);
+		}
+
 		seg_tree_gold.update_point(i, value);
 		data[i] = value;
 		extensive_query(data, seg_tree, seg_tree_gold);
@@ -99,7 +108,7 @@ namespace SegmentTree
 			ds::bin_tree::seg_tree<std::vector<int>, int, int> seg_tree(data, data.size(), access_data, merge_nodes, update_data);
 			SegmentTreeGold seg_tree_gold(data);
 
-			extensive_update(data, seg_tree, seg_tree_gold, 1, false);
+			extensive_update(data, seg_tree, seg_tree_gold, 1, false, false);
 		}
 	};
 
@@ -121,7 +130,16 @@ namespace SegmentTree
 			ds::bin_tree::seg_tree<std::vector<int>, int, int> seg_tree(data, data.size(), access_data, merge_nodes, update_data);
 			SegmentTreeGold seg_tree_gold(data);
 
-			extensive_update(data, seg_tree, seg_tree_gold, 0, true);
+			extensive_update(data, seg_tree, seg_tree_gold, 0, true, false);
+		}
+
+		TEST_METHOD(random_update_point_test)
+		{
+			auto data = generate_data(20);
+			ds::bin_tree::seg_tree<std::vector<int>, int, int> seg_tree(data, data.size(), access_data, merge_nodes, update_data);
+			SegmentTreeGold seg_tree_gold(data);
+
+			extensive_update(data, seg_tree, seg_tree_gold, 0, true, true);
 		}
 
 		TEST_METHOD(full_update_test)
@@ -132,18 +150,20 @@ namespace SegmentTree
 			const ds::bin_tree::range update_segment{ 0, data.size() - 1 };
 
 			auto value = 1;
-			seg_tree.update_range(update_segment, value);
+			//seg_tree.update_range(update_segment, value);
 			for (auto i = update_segment.lower_bound; i <= update_segment.upper_bound; ++i)
 			{
 				seg_tree_gold.update_point(i, value);
+				seg_tree.update_point(i, value);
 				data[i] = value;
 			}
 
 			value = 100;
-			seg_tree.update_range(update_segment, value);
+			//seg_tree.update_range(update_segment, value);
 			for (auto i = update_segment.lower_bound; i <= update_segment.upper_bound; ++i)
 			{
 				seg_tree_gold.update_point(i, value);
+				seg_tree.update_point(i, value);
 				data[i] = value;
 			}
 
@@ -176,8 +196,9 @@ namespace SegmentTree
 			ds::bin_tree::range segment;
 			for (std::size_t i = 0; i < data_size; ++i)
 			{
-				segment.lower_bound = segment.upper_bound = i;
-				seg_tree.update_range(segment, i);
+				/*segment.lower_bound = segment.upper_bound = i;
+				seg_tree.update_range(segment, i);*/
+				seg_tree.update_point(i, i);
 			}
 		}
 	};

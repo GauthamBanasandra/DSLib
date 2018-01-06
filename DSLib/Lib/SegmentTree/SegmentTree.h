@@ -40,6 +40,7 @@ namespace ds
 
 			// Updates the values in the specified segment
 			void update_range(const range& update_segment, const U& data);
+			void update_point(std::size_t idx, const T& data);
 
 			C container;
 			std::size_t size;
@@ -52,6 +53,7 @@ namespace ds
 			response<T> query(node<T>* n, const range& segment, const range& query_segment);
 			void update_range(node<T>* n, const range& segment, const range& update_segment, const U& data);
 			void propagate_laziness(node<T>* n, const U& data);
+			void update_point(node<T>* n, std::size_t l, std::size_t r, std::size_t idx, const T& data);
 
 			// Stores the data which will needs to get updated in the next query/update in each node
 			std::unordered_map<node<T>*, U> lazy_store_;
@@ -80,6 +82,12 @@ namespace ds
 		{
 			const range segment{ 0, size - 1 };
 			return update_range(this->root, segment, update_segment, data);
+		}
+
+		template <class C, class T, class U>
+		void seg_tree<C, T, U>::update_point(std::size_t idx, const T& data)
+		{
+			update_point(this->root, 0, size - 1, idx, data);
 		}
 
 		template<class C, class T, class U>
@@ -220,6 +228,28 @@ namespace ds
 			// Mark its  children as lazy, with the lazy data
 			lazy_store_[n->left_child] = data;
 			lazy_store_[n->right_child] = data;
+		}
+
+		template <class C, class T, class U>
+		void seg_tree<C, T, U>::update_point(node<T>* n, std::size_t l, std::size_t r, std::size_t idx, const T& data)
+		{
+			const auto i = idx;
+			const auto j = idx;
+			if (i > r || j < l)
+			{
+				return;
+			}
+
+			if (i == l && j == r)
+			{
+				n->data = data;
+				return;
+			}
+
+			update_point(n->left_child, l, (l + r) >> 1, idx, data);
+			update_point(n->right_child, ((l + r) >> 1) + 1, r, idx, data);
+
+			n->data = merge_nodes(n->left_child->data, n->right_child->data);
 		}
 	}
 }
