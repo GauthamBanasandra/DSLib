@@ -2,8 +2,6 @@
 #include "Node.h"
 #include "BinaryTree.h"
 
-#include <unordered_map>
-
 namespace ds
 {
 	namespace bin_tree
@@ -67,9 +65,6 @@ namespace ds
 
 			static range left(const range& segment) { return range{ segment.lower_bound, (segment.lower_bound + segment.upper_bound) >> 1 }; }
 			static range right(const range& segment) { return range{ ((segment.lower_bound + segment.upper_bound) >> 1) + 1, segment.upper_bound }; }
-
-			// Stores the data which will needs to get updated in the next query/update in each node
-			std::unordered_map<node<seg_data<T, U>>*, U> lazy_store_;
 		};
 
 		template<class C, class T, class U>
@@ -140,17 +135,16 @@ namespace ds
 			}
 
 			// Check if the current node is lazy
-			auto find = lazy_store_.find(n);
-			if (find != lazy_store_.end())
+			if (n->data.is_lazy)
 			{
 				// Current node has some lazy data pending, update it first
-				n->data.data = update_data(segment, n->data.data, find->second);
+				n->data.data = update_data(segment, n->data.data, n->data.lazy_data);
 
 				// If the current node isn't a leaf node, then propagate laziness to its children
-				propagate_laziness(n, find->second);
+				propagate_laziness(n, n->data.lazy_data);
 
 				// Get rid of the laziness!
-				lazy_store_.erase(find);
+				n->data.is_lazy = false;
 			}
 
 			// Completely within the query range
@@ -178,16 +172,15 @@ namespace ds
 		template<class C, class T, class U>
 		void seg_tree<C, T, U>::update_range(node<seg_data<T, U>>* n, const range& segment, const range& update_segment, const U& data)
 		{
-			auto find = lazy_store_.find(n);
-			if (find != lazy_store_.end())
+			if (n->data.is_lazy)
 			{
 				// If the current node is lazy, need to update the node with the lazy value, if it exists
-				n->data.data = update_data(segment, n->data.data, find->second);
+				n->data.data = update_data(segment, n->data.data, n->data.lazy_data);
 
 				// If the current node isn't a leaf node, mark its children as lazy
-				propagate_laziness(n, find->second);
+				propagate_laziness(n, n->data.lazy_data);
 
-				lazy_store_.erase(find);
+				n->data.is_lazy = false;
 			}
 
 			// Completely outside query range
@@ -222,8 +215,8 @@ namespace ds
 			}
 
 			// Mark its  children as lazy, with the lazy data
-			lazy_store_[n->left_child] = data;
-			lazy_store_[n->right_child] = data;
+			n->left_child->data.is_lazy = n->right_child->data.is_lazy = true;
+			n->left_child->data.lazy_data = n->right_child->data.lazy_data = data;
 		}
 
 		template <class C, class T, class U>
