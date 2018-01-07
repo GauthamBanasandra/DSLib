@@ -196,9 +196,9 @@ namespace SegmentTree
 			ds::bin_tree::range segment;
 			for (std::size_t i = 0; i < data_size; ++i)
 			{
-				/*segment.lower_bound = segment.upper_bound = i;
-				seg_tree.update_range(segment, i);*/
-				seg_tree.update_point(i, i);
+				segment.lower_bound = segment.upper_bound = i;
+				seg_tree.update_range(segment, i);
+				//seg_tree.update_point(i, i);
 			}
 		}
 	};

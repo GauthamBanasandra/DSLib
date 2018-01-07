@@ -23,8 +23,18 @@ namespace ds
 			T data;
 		};
 
+		template<class T, class U>
+		struct seg_data
+		{
+			seg_data() :is_lazy(false) {}
+
+			T data;
+			bool is_lazy;
+			U lazy_data;
+		};
+
 		template<class C, class T, class U>
-		class seg_tree : public binary_tree<T>
+		class seg_tree : public binary_tree<seg_data<T, U>>
 		{
 		public:
 			// container is a void pointer to the container
@@ -49,17 +59,17 @@ namespace ds
 			T(*update_data)(const range& segment, const T& node_data, const U& data);
 
 		private:
-			node<T>* build_tree(node_type type, const range& segment) const;
-			response<T> query(node<T>* n, const range& segment, const range& query_segment);
-			void update_range(node<T>* n, const range& segment, const range& update_segment, const U& data);
-			void propagate_laziness(node<T>* n, const U& data);
-			void update_point(node<T>* n, const range& segment, std::size_t idx, const U& data);
+			node<seg_data<T, U>>* build_tree(node_type type, const range& segment) const;
+			response<T> query(node<seg_data<T, U>>* n, const range& segment, const range& query_segment);
+			void update_range(node<seg_data<T, U>>* n, const range& segment, const range& update_segment, const U& data);
+			void propagate_laziness(node<seg_data<T, U>>* n, const U& data);
+			void update_point(node<seg_data<T, U>>* n, const range& segment, std::size_t idx, const U& data);
 
 			static range left(const range& segment) { return range{ segment.lower_bound, (segment.lower_bound + segment.upper_bound) >> 1 }; }
 			static range right(const range& segment) { return range{ ((segment.lower_bound + segment.upper_bound) >> 1) + 1, segment.upper_bound }; }
 
 			// Stores the data which will needs to get updated in the next query/update in each node
-			std::unordered_map<node<T>*, U> lazy_store_;
+			std::unordered_map<node<seg_data<T, U>>*, U> lazy_store_;
 		};
 
 		template<class C, class T, class U>
@@ -95,29 +105,33 @@ namespace ds
 		}
 
 		template<class C, class T, class U>
-		node<T>* seg_tree<C, T, U>::build_tree(const node_type type, const range& segment) const
+		node<seg_data<T, U>>* seg_tree<C, T, U>::build_tree(const node_type type, const range& segment) const
 		{
 			// Leaf node
 			if (segment.lower_bound == segment.upper_bound)
 			{
 				// Store the c[i] value in the leaf node
-				return new node<T>(access_data(container, segment.lower_bound), type);
+				seg_data<T, U> node_data;
+				node_data.data = access_data(container, segment.lower_bound);
+				return new node<seg_data<T, U>>(node_data, type);
 			}
-		
+
 			const auto left_child = build_tree(node_type::k_left_child, left(segment));
 			const auto right_child = build_tree(node_type::k_right_child, right(segment));
 
 			// Perform operation on the 2 nodes and store its result in the parent node
-			const auto new_node = new node<T>(merge_nodes(left_child->data, right_child->data), type);
+			seg_data<T, U> node_data;
+			node_data.data = merge_nodes(left_child->data.data, right_child->data.data);
+			node<seg_data<T, U>>* new_node = new node<seg_data<T, U>>(node_data, type);
+
 			new_node->left_child = left_child;
 			new_node->right_child = right_child;
 			left_child->ancestor = right_child->ancestor = new_node;
 			return new_node;
 		}
 
-
 		template<class C, class T, class U>
-		response<T> seg_tree<C, T, U>::query(node<T>* n, const range& segment, const range& query_segment)
+		response<T> seg_tree<C, T, U>::query(node<seg_data<T, U>>* n, const range& segment, const range& query_segment)
 		{
 			// Outside query range
 			if (query_segment.lower_bound > segment.upper_bound || query_segment.upper_bound < segment.lower_bound)
@@ -130,7 +144,7 @@ namespace ds
 			if (find != lazy_store_.end())
 			{
 				// Current node has some lazy data pending, update it first
-				n->data = update_data(segment, n->data, find->second);
+				n->data.data = update_data(segment, n->data.data, find->second);
 
 				// If the current node isn't a leaf node, then propagate laziness to its children
 				propagate_laziness(n, find->second);
@@ -142,7 +156,7 @@ namespace ds
 			// Completely within the query range
 			if (segment.lower_bound >= query_segment.lower_bound && segment.upper_bound <= query_segment.upper_bound)
 			{
-				return response<T>{ true, n->data };
+				return response<T>{ true, n->data.data };
 			}
 
 			const auto left_response = query(n->left_child, left(segment), query_segment);
@@ -162,13 +176,13 @@ namespace ds
 		}
 
 		template<class C, class T, class U>
-		void seg_tree<C, T, U>::update_range(node<T>* n, const range& segment, const range& update_segment, const U& data)
+		void seg_tree<C, T, U>::update_range(node<seg_data<T, U>>* n, const range& segment, const range& update_segment, const U& data)
 		{
 			auto find = lazy_store_.find(n);
 			if (find != lazy_store_.end())
 			{
 				// If the current node is lazy, need to update the node with the lazy value, if it exists
-				n->data = update_data(segment, n->data, find->second);
+				n->data.data = update_data(segment, n->data.data, find->second);
 
 				// If the current node isn't a leaf node, mark its children as lazy
 				propagate_laziness(n, find->second);
@@ -185,7 +199,7 @@ namespace ds
 			// Completely within query range
 			if (segment.lower_bound >= update_segment.lower_bound && segment.upper_bound <= update_segment.upper_bound)
 			{
-				n->data = update_data(segment, n->data, data);
+				n->data.data = update_data(segment, n->data.data, data);
 
 				// If the current node isn't a leaf node, mark its children as lazy
 				propagate_laziness(n, data);
@@ -195,12 +209,12 @@ namespace ds
 			update_range(n->left_child, left(segment), update_segment, data);
 			update_range(n->right_child, right(segment), update_segment, data);
 
-			n->data = merge_nodes(n->left_child->data, n->right_child->data);
+			n->data.data = merge_nodes(n->left_child->data.data, n->right_child->data.data);
 		}
 
 		// Induces/updates the laziness associated with the current node to its children
 		template<class C, class T, class U>
-		void seg_tree<C, T, U>::propagate_laziness(node<T>* n, const U& data)
+		void seg_tree<C, T, U>::propagate_laziness(node<seg_data<T, U>>* n, const U& data)
 		{
 			if (n->left_child == nullptr || n->right_child == nullptr)
 			{
@@ -213,7 +227,7 @@ namespace ds
 		}
 
 		template <class C, class T, class U>
-		void seg_tree<C, T, U>::update_point(node<T>* n, const range& segment, std::size_t idx, const U& data)
+		void seg_tree<C, T, U>::update_point(node<seg_data<T, U>>* n, const range& segment, std::size_t idx, const U& data)
 		{
 			const auto i = idx;
 			const auto j = idx;
@@ -224,14 +238,14 @@ namespace ds
 
 			if (i == segment.lower_bound && j == segment.upper_bound)
 			{
-				n->data = update_data(segment, n->data, data);
+				n->data.data = update_data(segment, n->data.data, data);
 				return;
 			}
-			
+
 			update_point(n->left_child, left(segment), idx, data);
 			update_point(n->right_child, right(segment), idx, data);
 
-			n->data = merge_nodes(n->left_child->data, n->right_child->data);
+			n->data.data = merge_nodes(n->left_child->data.data, n->right_child->data.data);
 		}
 	}
 }
