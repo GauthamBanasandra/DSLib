@@ -68,3 +68,5 @@
 /DSLib/Test/SegmentTree/Debug
 /DSLib/Deps
 /DSLib/out
+/DSLib/Client/FenwickTree/Debug
+/DSLib/Lib/FenwickTree/Debug
