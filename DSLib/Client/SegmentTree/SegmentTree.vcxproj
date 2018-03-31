@@ -101,7 +101,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\gauth\source\repos\DSLib\DSLib\Lib\SegmentTree;C:\Users\gauth\source\repos\DSLib\DSLib\Lib\BinaryTree;C:\Users\gauth\source\repos\DSLib\DSLib\Lib\Tree;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Lib\SegmentTree;$(SolutionDir)\Lib\BinaryTree;$(SolutionDir)\Lib\Tree;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -133,7 +133,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\gauth\source\repos\DSLib\DSLib\Lib\SegmentTree;C:\Users\gauth\source\repos\DSLib\DSLib\Lib\BinaryTree;C:\Users\gauth\source\repos\DSLib\DSLib\Lib\Tree;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Lib\SegmentTree;$(SolutionDir)\Lib\BinaryTree;$(SolutionDir)\Lib\Tree;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
