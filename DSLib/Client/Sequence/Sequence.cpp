@@ -4,13 +4,16 @@
 
 int main(int argc, char* argv[])
 {
-	std::vector<int> v{ 1 };
-	for (auto number : ds::seq::longest_increasing<int>(v))
+	const std::vector<int> v{
+		//-7, 10, 9, 2, 3, 8, 8, 6 
+		//6, 1, 5, 4, 7, 3, 2, 9, 8, 10
+		//15,27,14,38,26,55,46,65,85
+		2, 7, 4, 3, 8
+	};
+	for (auto number : ds::seq::longest_increasing(v))
 	{
 		std::cout << number << " ";
 	}
-	auto find_it = std::lower_bound(v.begin(), v.end(), 1);
-	auto i_insert = std::distance(v.begin(), find_it);
-	std::cout << i_insert << std::endl;
+	std::cout << std::endl;
 	return 0;
 }

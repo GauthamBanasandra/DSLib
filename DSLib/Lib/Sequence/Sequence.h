@@ -18,15 +18,15 @@ namespace ds
 		const auto numbers_len = numbers.size();
 		std::vector<T> lis;
 		std::vector<T> s;
-		s.reserve(numbers_len);
 		lis.reserve(numbers_len);
+		s.reserve(numbers_len);
 
 		for (const auto &number : numbers)
 		{
 			auto find_it = std::lower_bound(s.begin(), s.end(), number);
 			auto i_insert = std::distance(s.begin(), find_it);
 
-			if (find_it != numbers.end())
+			if (find_it != s.end())
 			{
 				*find_it = number;
 			}
@@ -35,11 +35,12 @@ namespace ds
 				s.emplace_back(number);
 			}
 
-			if (i_insert == lis.size())
+			const auto lis_len = lis.size();
+			if (i_insert == lis_len)
 			{
 				lis.emplace_back(number);
 			}
-			else if (i_insert == lis.size() - 1)
+			else if (i_insert == lis_len - 1)
 			{
 				lis[i_insert] = number;
 			}
