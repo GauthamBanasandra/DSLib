@@ -70,3 +70,17 @@
 /DSLib/out
 /DSLib/Client/FenwickTree/Debug
 /DSLib/Lib/FenwickTree/Debug
+/DSLib/Client/AVL/x64/Debug
+/DSLib/Client/FenwickTree/x64/Debug
+/DSLib/Client/SegmentTree/x64/Debug
+/DSLib/Client/Sequence/x64/Debug
+/DSLib/Client/UFDS/x64/Debug
+/DSLib/Lib/AVL/x64/Debug
+/DSLib/Lib/FenwickTree/x64/Debug
+/DSLib/Lib/SegmentTree/x64/Debug
+/DSLib/Lib/Sequence/x64/Debug
+/DSLib/Lib/Tree/x64/Debug
+/DSLib/Lib/UFDS/x64/Debug
+/DSLib/Test/AVL/x64/Debug
+/DSLib/Test/SegmentTree/x64/Debug
+/DSLib/Test/UFDS/x64/Debug

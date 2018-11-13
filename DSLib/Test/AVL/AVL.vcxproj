@@ -23,7 +23,7 @@
     <ProjectGuid>{49612D9F-D969-44F9-815B-02BBD7D983E1}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>AVL</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
     <ProjectSubType>NativeUnitTestProject</ProjectSubType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
