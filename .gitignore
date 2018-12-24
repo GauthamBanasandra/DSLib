@@ -84,3 +84,6 @@
 /DSLib/Test/AVL/x64/Debug
 /DSLib/Test/SegmentTree/x64/Debug
 /DSLib/Test/UFDS/x64/Debug
+/DSLib/Client/FenwickTree
+/DSLib/Client/Knapsack/x64/Debug
+/DSLib/Lib/Knapsack/x64/Debug
