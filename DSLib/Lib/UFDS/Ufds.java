@@ -1,5 +1,7 @@
 package UFDS;
 
+import java.util.HashSet;
+
 public class Ufds {
     public Ufds(int numNodes) {
         mNumNodes = numNodes;
@@ -39,6 +41,14 @@ public class Ufds {
                 ++mRank[jParent];
             }
         }
+    }
+
+    public int getNumComponents() {
+        HashSet<Integer> parents = new HashSet<>(mNumNodes);
+        for (int i = 0; i < mNumNodes; i++) {
+            parents.add(findSet(i));
+        }
+        return parents.size();
     }
 
     private final int mNumNodes;
