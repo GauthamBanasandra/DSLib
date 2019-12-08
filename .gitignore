@@ -87,3 +87,7 @@
 /DSLib/Client/FenwickTree
 /DSLib/Client/Knapsack/x64/Debug
 /DSLib/Lib/Knapsack/x64/Debug
+/DSLib/.vs/DSLib/v16
+/DSLib/Client/Trie/x64/Debug
+/DSLib/Lib/Trie/x64/Debug
+/DSLib/Test/Trie/x64/Debug
