@@ -20,9 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Merge-sort.h" />
+    <ClInclude Include="Quick-sort.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Merge-sort.cpp" />
+    <ClCompile Include="Sorting.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

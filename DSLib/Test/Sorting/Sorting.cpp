@@ -21,6 +21,18 @@ namespace Sorting
 			Assert::IsTrue(random_numbers == expected);
 		}
 
+		TEST_METHOD(TestQuickSortLargeVector)
+		{
+			auto random_numbers = GetRandomNumbers(10000);
+			auto expected(random_numbers);
+
+			alg::sorting::quick<int> q(random_numbers);
+			q.sort();
+
+			std::sort(expected.begin(), expected.end());
+			Assert::IsTrue(random_numbers == expected);
+		}
+
 	private:
 		static std::vector<int> GetRandomNumbers(size_t count);
 	};

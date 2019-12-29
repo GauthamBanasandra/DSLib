@@ -15,5 +15,6 @@
 #include <algorithm>
 
 #include "Merge-sort.h"
+#include "Quick-sort.h"
 
 #endif //PCH_H
