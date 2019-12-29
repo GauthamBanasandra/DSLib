@@ -94,3 +94,6 @@
 /DSLib/Client/Sorting/x64/Debug
 /DSLib/Lib/Sorting/x64/Debug
 /DSLib/Test/Sorting/x64/Debug
+/DSLib/Client/Permutation/x64/Debug
+/DSLib/Lib/Permutation/x64/Debug
+/DSLib/Test/Permutation/x64/Debug
