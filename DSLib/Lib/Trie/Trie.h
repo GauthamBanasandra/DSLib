@@ -20,10 +20,12 @@ namespace ds
 		public:
 			void put(const std::string& key, int value);
 			int get(const std::string& key) const;
+			std::vector<std::string> collect(const std::string& key) const;
 
 		private:
 			node* put(node* node, const std::string& key, int value, size_t depth) const;
 			node* get(node* node, const std::string& key, size_t depth) const;
+			void collect(node* node, const std::string& key, size_t depth, std::string& prefix, std::vector<std::string>& strings) const;
 
 			node* root_{ new node };
 		};
@@ -46,6 +48,14 @@ namespace ds
 				return -1;
 			}
 			return node->value;
+		}
+
+		inline std::vector<std::string> tree::collect(const std::string& key) const
+		{
+			std::string prefix;
+			std::vector<std::string> strings;
+			collect(root_, key, 0, prefix, strings);
+			return strings;
 		}
 
 		inline node* tree::put(node* node, const std::string& key, const int value, const size_t depth) const
@@ -76,6 +86,32 @@ namespace ds
 			}
 			const auto c = key[depth] - 'a';
 			return get(node->next[c], key, depth + 1);
+		}
+
+		inline void tree::collect(node* node, const std::string& key, const size_t depth, std::string& prefix,
+			std::vector<std::string>& strings) const
+		{
+			if (node == nullptr)
+			{
+				return;
+			}
+			if (depth < key.size())
+			{
+				const auto c = key[depth] - 'a';
+				prefix.push_back(key[depth]);
+				collect(node->next[c], key, depth + 1, prefix, strings);
+				prefix.pop_back();
+			}
+			else
+			{
+				strings.emplace_back(prefix);
+				for (size_t i = 0; i < node::range; ++i)
+				{
+					prefix.push_back('a' + static_cast<int>(i));
+					collect(node->next[i], key, depth, prefix, strings);
+					prefix.pop_back();
+				}
+			}
 		}
 	}
 }
