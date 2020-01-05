@@ -15,8 +15,8 @@ namespace alg
 			std::vector<T>& sort();
 
 		private:
-			void sort(size_t lo, size_t hi);
-			size_t partition(size_t lo, size_t hi);
+			void sort(int lo, int hi);
+			int partition(int lo, int hi);
 
 			std::vector<T>& data_;
 		};
@@ -34,7 +34,7 @@ namespace alg
 		}
 
 		template <typename T>
-		void quick<T>::sort(const size_t lo, const size_t hi)
+		void quick<T>::sort(const int lo, const int hi)
 		{
 			if (hi <= lo)
 			{
@@ -46,7 +46,7 @@ namespace alg
 		}
 
 		template <typename T>
-		size_t quick<T>::partition(size_t lo, const size_t hi)
+		int quick<T>::partition(int lo, const int hi)
 		{
 			auto i = lo;
 			auto j = hi + 1;
