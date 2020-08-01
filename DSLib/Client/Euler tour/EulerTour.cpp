@@ -19,10 +19,9 @@ int main(int argc, char* argv[])
 	};
 
 	const size_t num_nodes = 5;
-
 	EulerTour tour(num_nodes, edge_list, false);
 
-	for (const auto& node_id : tour.Get())
+	for (const auto& node_id : tour.Get(4))
 	{
 		std::cout << node_id << std::endl;
 	}

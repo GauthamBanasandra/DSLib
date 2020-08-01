@@ -13,10 +13,10 @@ EulerTour::EulerTour(const size_t num_nodes, const std::vector<std::pair<NodeId,
 	}
 }
 
-std::list<EulerTour::NodeId> EulerTour::Get()
+std::list<EulerTour::NodeId> EulerTour::Get(const NodeId start_node_id)
 {
 	std::list<NodeId> tour;
-	Tour(3, tour, tour.begin());
+	Tour(start_node_id, tour, tour.begin());
 	return tour;
 }
 

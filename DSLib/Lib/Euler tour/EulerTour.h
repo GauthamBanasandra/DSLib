@@ -11,7 +11,7 @@ public:
 
 	EulerTour(size_t num_nodes, const std::vector<std::pair<NodeId, NodeId>>& edge_list, bool is_directed);
 
-	[[nodiscard]] std::list<NodeId> Get();
+	[[nodiscard]] std::list<NodeId> Get(NodeId start_node_id);
 
 private:
 	struct Node
