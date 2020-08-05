@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "EulerTour.h"
 
 EulerTour::EulerTour(const size_t num_nodes, const std::vector<std::pair<NodeId, NodeId>>& edge_list, const bool is_directed) :num_nodes_{ num_nodes }, edge_list_{ edge_list }
@@ -13,15 +15,15 @@ EulerTour::EulerTour(const size_t num_nodes, const std::vector<std::pair<NodeId,
 	}
 }
 
-std::vector<std::pair<EulerTour::NodeId, EulerTour::NodeId>> EulerTour::Get(const NodeId start_node_id)
+std::list<EulerTour::Edge> EulerTour::Get(const NodeId start_node_id)
 {
-	std::vector<std::pair<NodeId, NodeId>> tour;
-	tour.reserve(edge_list_.size());
-	Tour(start_node_id, tour);
+	std::list<Edge> tour;
+	Tour(start_node_id, tour, tour.begin());
+	std::reverse(tour.begin(), tour.end());
 	return tour;
 }
 
-void EulerTour::Tour(const NodeId node_id, std::vector<std::pair<NodeId, NodeId>>& tour)
+void EulerTour::Tour(const NodeId node_id, std::list<Edge>& tour, const std::list<Edge>::iterator& tour_it)
 {
 	for (auto& adj_node : adj_list_[node_id])
 	{
@@ -40,7 +42,6 @@ void EulerTour::Tour(const NodeId node_id, std::vector<std::pair<NodeId, NodeId>
 			}
 		}
 
-		tour.emplace_back(node_id, adj_node.id);
-		Tour(adj_node.id, tour);
+		Tour(adj_node.id, tour, tour.emplace(tour_it, node_id, adj_node.id));
 	}
 }
